@@ -203,6 +203,37 @@ public sealed class WireFormatTests
     }
 
     [Fact]
+    public async Task ExtraBodyFieldsCanOverrideQuestions()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(new SystemOneRequest
+        {
+            State = "text",
+            Questions = [new NoulQuestion("original", "question?")],
+            AdditionalProperties = new Dictionary<string, JsonNode?>
+            {
+                ["questions"] = new JsonObject
+                {
+                    ["replacement"] = new JsonObject
+                    {
+                        ["type"] = "noul",
+                        ["instructions"] = "replacement question?",
+                    },
+                },
+            },
+        });
+
+        using var body = handler.LastRequest.ParseBody();
+        var questions = body.RootElement.GetProperty("questions");
+
+        Assert.False(questions.TryGetProperty("original", out _));
+        Assert.Equal(
+            "replacement question?",
+            questions.GetProperty("replacement").GetProperty("instructions").GetString());
+    }
+
+    [Fact]
     public async Task PerCallModelOverridesTheClientDefault()
     {
         var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);

@@ -180,6 +180,7 @@ internal static class TypeSafeRequestWriter
     {
         if (additional is not null && additional.ContainsKey("questions"))
         {
+            WriteNode(writer, "questions", additional["questions"]);
             return;
         }
 
