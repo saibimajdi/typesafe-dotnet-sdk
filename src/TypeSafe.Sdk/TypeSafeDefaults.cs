@@ -1,8 +1,8 @@
 namespace TypeSafe;
 
 /// <summary>
-/// Environment variable names read by the SDK, and the defaults applied when neither an explicit
-/// option nor an environment variable supplies a value.
+/// Environment variable names shared with the TypeSafe Python and JavaScript SDKs, and the
+/// defaults applied when neither an explicit option nor an environment variable supplies a value.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -33,10 +33,23 @@ public static class TypeSafeDefaults
     public const string DefaultModelEnvironmentVariable = "TYPESAFE_DEFAULT_MODEL";
 
     /// <summary>
-    /// Environment variable setting the log level. Accepts <c>trace</c>, <c>debug</c>,
-    /// <c>information</c> (<c>info</c>), <c>warning</c> (<c>warn</c>), <c>error</c>,
-    /// <c>critical</c>, <c>none</c>, and <c>off</c>.
+    /// Environment variable the sibling TypeSafe SDKs use to set their log level.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The .NET SDK does not read this variable, and does not set a log level of its own. Logging
+    /// levels belong to the host's logging configuration in .NET, and a library that silently
+    /// reconfigured them would fight the application that owns them. Configure the
+    /// <c>TypeSafe.Sdk</c> category through your own logging setup instead:
+    /// </para>
+    /// <code>
+    /// builder.Logging.AddFilter("TypeSafe.Sdk", LogLevel.Debug);
+    /// </code>
+    /// <para>
+    /// The name is published here for polyglot deployments, where the same environment variable
+    /// may still need to drive a Python or JavaScript service alongside a .NET one.
+    /// </para>
+    /// </remarks>
     public const string LogLevelEnvironmentVariable = "TYPESAFE_LOG_LEVEL";
 
     /// <summary>

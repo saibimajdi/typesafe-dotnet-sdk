@@ -7,7 +7,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Everything listed here is the first planned release, `0.1.0`. The SDK is pre-1.0: while the
+Everything listed here is the first planned release, [0.1.0]. The SDK is pre-1.0: while the
 version is `0.x`, a breaking change increments the minor version, and the public API surface is
 tracked per project in `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` so that no change to
 it can happen by accident.

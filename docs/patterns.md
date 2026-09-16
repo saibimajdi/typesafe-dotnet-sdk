@@ -142,17 +142,17 @@ var result = await client.SystemOneAsync(
     ]);
 
 var priority = CompositeScore.Weighted(
-    new WeightedScore(result.Score("severity"), weight: 3.0),
-    new WeightedScore(result.Score("frustration"), weight: 2.0),
-    new WeightedScore(result.Score("revenue_impact"), weight: 1.0));
+    new WeightedScore(result.Score("severity"), 3.0),
+    new WeightedScore(result.Score("frustration"), 2.0),
+    new WeightedScore(result.Score("revenue_impact"), 1.0));
 
 Console.WriteLine($"priority {priority:P0}");
 ```
 
-Weights are relative, so only their ratios matter: `3, 2, 1` means the same thing as `0.5, 0.33,
-0.17`. Negative weights are rejected with `ArgumentException` — a factor that should reduce the
-result is better expressed by reversing its rubric than by a negative weight — as is a set of parts
-whose weights are all zero.
+Weights are the second argument and are relative, so only their ratios matter: `3, 2, 1` means the
+same thing as `0.5, 0.33, 0.17`. Negative weights are rejected with `ArgumentException` — a factor
+that should reduce the result is better expressed by reversing its rubric than by a negative weight
+— as is a set of parts whose weights are all zero.
 
 Because answers are immutable and round-trip through JSON, re-tuning weights against a stored result
 costs nothing:

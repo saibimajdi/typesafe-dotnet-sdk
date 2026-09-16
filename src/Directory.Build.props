@@ -25,7 +25,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>typesafe;ai;systemone;jev;classification;confidence;llm;sdk;client</PackageTags>
-    <Description>Official-style .NET client for the TypeSafe AI System One API. Ask typed yes/no (noul), choice, and score questions about any state and get structured, confidence-scored answers back.</Description>
+    <Description>Community .NET client for the TypeSafe AI System One API. Ask typed yes/no (noul), choice, and score questions about any text or structured state, and get structured, confidence-scored answers back. Not affiliated with or endorsed by TypeSafe AI.</Description>
 
     <!-- Symbols: a .snupkg alongside the .nupkg, with everything embedded so the
          package is self-contained for source-stepping. -->

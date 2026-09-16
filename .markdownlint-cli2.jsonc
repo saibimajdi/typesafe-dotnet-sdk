@@ -1,0 +1,51 @@
+{
+  // markdownlint-cli2 configuration.
+  //
+  // This is the file both `.github/workflows/ci.yml` (through
+  // DavidAnson/markdownlint-cli2-action) and a local `npx markdownlint-cli2` run pick up, so the
+  // two agree by construction.
+  "config": {
+    // Every default rule is on, except the two below.
+    "default": true,
+
+    // Line length. Prose here is wrapped by hand, but tables, badge lines, and long URLs cannot be
+    // without making them unreadable or breaking them, and a hard 80-column rule produces a wall
+    // of false positives in exactly those places.
+    "MD013": false,
+
+    // Inline HTML. Used deliberately in a handful of places, for example the GitHub alert block in
+    // the README and the HTML comments in the pull request template.
+    "MD033": false,
+
+    // Duplicate headings are only an error when they are siblings. "### Limits" appears under both
+    // the choice and the score section of docs/questions.md, and every Keep a Changelog release
+    // repeats "### Added" and "### Fixed"; neither is a mistake.
+    "MD024": {
+      "siblings_only": true
+    }
+  },
+
+  // The same glob the workflow passes, so a local run covers the same files.
+  "globs": ["**/*.md"],
+
+  "ignores": [
+    "**/node_modules/**",
+    ".git/**",
+
+    // Build output. Also covered by .gitignore, but markdownlint-cli2 does not read that file.
+    "**/bin/**",
+    "**/obj/**",
+    "artifacts/**",
+    "TestResults/**",
+
+    // Tool and package caches kept inside the working tree.
+    ".nuget/**",
+    ".dotnet-home/**",
+    ".clihome/**",
+    ".packages/**",
+
+    // Local-only research and agent working notes. These are never committed, but excluding them
+    // here means a local run of the documented command is green on a developer machine too.
+    ".research/**"
+  ]
+}

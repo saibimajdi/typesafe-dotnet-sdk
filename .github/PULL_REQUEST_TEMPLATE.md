@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -- a pull request template starts with its first section, not a title -->
 <!--
   Thanks for contributing. Keep this description about the change itself: what it does, why it is
   needed, and anything a reviewer could not work out from the diff. Delete the comments as you go.

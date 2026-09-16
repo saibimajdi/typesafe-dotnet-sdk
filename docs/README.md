@@ -40,5 +40,5 @@ a threshold, is caller code. See [answers-and-confidence.md](answers-and-confide
 - [Changelog](../CHANGELOG.md) — what shipped when.
 - [Support](../SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
   service.
-- `docs/research/` — background research notes that informed the design. Not user documentation, and
-  not maintained as such.
+- [TypeSafe's own documentation](https://docs.typesafe.ai/) — the authority on the API itself:
+  states, primitives, confidence, and the HTTP contract this SDK implements.

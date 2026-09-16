@@ -44,6 +44,10 @@ desktop.ini
 # Benchmark results
 BenchmarkDotNet.Artifacts/
 
+# Nested working directories that tooling can create under the tree
+.clihome/
+.packages/
+
 # Local-only agent/research scratch (not part of the published repository)
 .research/
 .dotnet-home/

@@ -27,6 +27,32 @@ follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 The SDK targets `net8.0` and `net10.0`. You do **not** need a .NET 8 SDK installed: the
 .NET 10 SDK restores the `net8.0` reference and targeting packs from NuGet automatically.
 
+You *do* need the .NET 8 **runtime** to execute the `net8.0` tests. The test project
+multi-targets `net8.0;net10.0` so that both shipped assets are genuinely exercised rather than
+merely compiled, and Microsoft.Testing.Platform runs every target framework it built. With only
+the .NET 10 runtime installed you will see this:
+
+```text
+Test run summary: Failed!
+  error: 1
+  total: 146
+  failed: 0
+  succeeded: 142
+  skipped: 4
+```
+
+That is one test module failing to start, not a failing test. Either install the .NET 8 runtime,
+or restrict the run to the framework you have:
+
+```bash
+dotnet test --solution TypeSafe.slnx -f net10.0
+```
+
+CI installs both `10.0.x` and `8.0.x` so each leg runs on its own runtime. Do not add
+`<RollForward>LatestMajor</RollForward>` to the test project to work around a missing runtime:
+that would silently run the `net8.0` assembly on the .NET 10 runtime in CI too, and the
+`net8.0` asset would stop being tested for real.
+
 ## Getting started
 
 ```bash
@@ -60,8 +86,11 @@ npx --yes markdownlint-cli2 "**/*.md"
 Pass a specific project instead of the whole solution when you are iterating:
 
 ```bash
-dotnet test tests/TypeSafe.Sdk.Tests/TypeSafe.Sdk.Tests.csproj
+dotnet test --project tests/TypeSafe.Sdk.Tests/TypeSafe.Sdk.Tests.csproj -f net10.0
 ```
+
+The `--project` form is required for the same reason as `--solution`: passing a bare project
+path is the VSTest syntax and is rejected under Microsoft.Testing.Platform.
 
 ### Coverage
 

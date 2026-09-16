@@ -22,6 +22,12 @@ on:
 
 permissions: read-all
 
+concurrency:
+  group: scorecard-${{ github.ref }}
+  # Serialize rather than cancel: a run interrupted between analysing and publishing would leave
+  # the published score stale. Adding `concurrency` does not affect `publish_results`.
+  cancel-in-progress: false
+
 jobs:
   analysis:
     name: scorecard analysis

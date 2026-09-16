@@ -83,6 +83,7 @@ jobs:
           -c ${{ env.CONFIGURATION }}
           --no-build
           --coverage
+          --coverage-output-format cobertura
           --results-directory ./TestResults
 
       - name: Upload test results and coverage

@@ -33,16 +33,23 @@ internal static class Program
 
         var scenario = args.Length > 0 ? args[0] : "triage";
 
-        await (scenario switch
+        var run = scenario switch
         {
-            "triage" => TriageAsync(client),
-            "routing" => ConfidenceGatedRoutingAsync(client),
-            "composite" => CompositeScoringAsync(client),
-            "batch" => SpeculativeFanOutAsync(client),
-            _ => throw new ArgumentException(
-                $"Unknown scenario '{scenario}'. Try: triage, routing, composite, batch."),
-        });
+            "triage" => (Func<ITypeSafeClient, Task>)TriageAsync,
+            "routing" => ConfidenceGatedRoutingAsync,
+            "composite" => CompositeScoringAsync,
+            "batch" => SpeculativeFanOutAsync,
+            _ => null,
+        };
 
+        if (run is null)
+        {
+            // A sample should not greet a typo with a stack trace.
+            Console.Error.WriteLine($"Unknown scenario '{scenario}'. Try: triage, routing, composite, batch.");
+            return 1;
+        }
+
+        await run(client);
         return 0;
     }
 
