@@ -78,6 +78,7 @@ public sealed class TypeSafeClient : ITypeSafeClient, IDisposable
     private TypeSafeClient(TypeSafeClientOptions? options, string? apiKey, HttpClient? httpClient)
     {
         _options = options ?? new TypeSafeClientOptions();
+        TypeSafeClientOptions.ValidateTimeout(_options.Timeout);
 
         if (apiKey is not null)
         {

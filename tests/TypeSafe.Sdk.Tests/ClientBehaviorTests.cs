@@ -270,6 +270,35 @@ public sealed class ClientBehaviorTests
         }, TestContext.Current.CancellationToken));
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-2)]
+    public void AnInvalidClientTimeoutIsRejectedWithoutDependencyInjection(int milliseconds)
+    {
+        var options = new TypeSafeClientOptions
+        {
+            ApiKey = TestClient.ApiKey,
+            Timeout = TimeSpan.FromMilliseconds(milliseconds),
+        };
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => new TypeSafeClient(options));
+    }
+
+    [Fact]
+    public async Task AnInvalidPerCallTimeoutIsRejectedBeforeSending()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SystemOneAsync(new SystemOneRequest
+        {
+            State = "text",
+            Questions = [new NoulQuestion("a", "q?")],
+            Options = new TypeSafeRequestOptions { Timeout = TimeSpan.Zero },
+        }, TestContext.Current.CancellationToken));
+
+        Assert.Equal(0, handler.Attempts);
+    }
+
     [Fact]
     public async Task TheModelsResourceListsModels()
     {

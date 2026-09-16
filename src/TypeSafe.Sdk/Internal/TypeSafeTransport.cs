@@ -68,6 +68,7 @@ internal sealed class TypeSafeTransport : IDisposable
     {
         var policy = options?.Retry ?? _options.Retry;
         var attemptTimeout = options?.Timeout ?? _options.Timeout;
+        TypeSafeClientOptions.ValidateTimeout(attemptTimeout);
 
         using var activity = TypeSafeTelemetry.ActivitySource.StartActivity(operation, ActivityKind.Client);
         activity?.SetTag("typesafe.operation", operation);
