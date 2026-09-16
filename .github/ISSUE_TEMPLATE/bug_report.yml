@@ -1,0 +1,121 @@
+name: Bug report
+description: Something in the SDK does not behave as documented.
+title: '[Bug]: '
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this.
+
+        > **Do not paste your TypeSafe API key, any `Authorization` header, or any customer data
+        > into this issue.** It is public and permanent. Revoke a key in the
+        > [TypeSafe console](https://console.typesafe.ai/) if you have already posted one.
+        >
+        > The `x-typesafe-request-id` value is safe to include, and TypeSafe support will ask for
+        > it. It is exposed as `SystemOneResult.RequestId` and `TypeSafeApiException.RequestId`.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I am using the latest release of `TypeSafe.Sdk`.
+          required: true
+        - label: I searched the existing issues for the same problem.
+          required: true
+        - label: This report contains no API key, credential, or private data.
+          required: true
+
+  - type: input
+    id: sdk-version
+    attributes:
+      label: SDK version
+      description: The `TypeSafe.Sdk` package version. Find it in your `.csproj`, your lock file, or from the assembly.
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-framework
+    attributes:
+      label: Target framework
+      description: The framework your project builds for. The SDK ships `net8.0` and `net10.0` assets.
+      options:
+        - net8.0
+        - net10.0
+        - Other or multiple
+    validations:
+      required: true
+
+  - type: input
+    id: dotnet-version
+    attributes:
+      label: .NET runtime version
+      description: The output of `dotnet --version`, or the runtime your application runs on.
+      placeholder: 10.0.12
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The actual behaviour, including the full exception type and message if there is one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+      description: What the documentation or the API led you to expect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        The smallest complete program that shows the problem. Replace the state, the API key, and
+        any customer data with synthetic values. "Minimal" matters: a reproduction that still
+        fails after everything unrelated is deleted is usually solvable in one reply.
+      render: csharp
+      placeholder: |
+        using TypeSafe;
+
+        var client = new TypeSafeClient(apiKey: "test-key");
+        var result = await client.SystemOneAsync(
+            "synthetic state",
+            [new NoulQuestion("is_urgent", "Does this convey urgency?")]);
+        Console.WriteLine(result.Noul("is_urgent").Probability);
+    validations:
+      required: true
+
+  - type: input
+    id: request-id
+    attributes:
+      label: Request id (optional, safe to share)
+      description: The `x-typesafe-request-id` from the failing call, if the failure came from the API.
+      placeholder: 8f2c1e4a-...
+    validations:
+      required: false
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Relevant configuration (optional)
+      description: |
+        Non-secret settings only: a custom `BaseUrl`, a modified `RetryPolicy`, a `Timeout`, a
+        custom `HttpClient` or handler, or a dependency injection setup. **Never include the API key.**
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Stack traces, logs with credentials removed, or links to related issues.
+    validations:
+      required: false

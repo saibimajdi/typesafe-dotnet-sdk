@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>TypeSafe.Sdk</PackageId>
+    <AssemblyName>TypeSafe.Sdk</AssemblyName>
+    <RootNamespace>TypeSafe</RootNamespace>
+    <Title>TypeSafe SDK for .NET</Title>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      The core client deliberately has exactly one dependency. Logging is part of the
+      documented observable behaviour of the sibling SDKs, and
+      Microsoft.Extensions.Logging.Abstractions is the .NET-idiomatic way to expose it.
+      Retry is implemented in-library rather than delegated to Polly; see docs/design.md.
+    -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    A Directory.Build.props stops MSBuild's upward search, so the repository-root file has to be
+    imported explicitly or the samples silently lose the shared compiler settings.
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!--
+    Samples are executable documentation rather than shipped code. They are held to the same
+    compiler settings as the libraries, but a few performance-shaped rules are relaxed where
+    following them would make the example less instructive.
+  -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CA1859</NoWarn>
+  </PropertyGroup>
+
+</Project>

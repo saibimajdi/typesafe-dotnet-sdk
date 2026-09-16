@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or usage help
+    url: https://github.com/JEV/typesafe-dotnet-sdk/discussions
+    about: Ask and answer usage questions in Discussions — they are searchable and help the next person.
+  - name: Report a security vulnerability
+    url: https://github.com/JEV/typesafe-dotnet-sdk/security/advisories/new
+    about: Report privately through a security advisory. Never open a public issue for a vulnerability.
+  - name: Read the documentation first
+    url: https://github.com/JEV/typesafe-dotnet-sdk/blob/main/docs/README.md
+    about: The quickstart, question types, patterns, and error handling are all documented.
+  - name: Problem with the TypeSafe API, account, or billing
+    url: https://typesafe.ai/
+    about: This is an independent community SDK. Service and account issues belong with TypeSafe AI.

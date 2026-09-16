@@ -1,0 +1,159 @@
+# Build, test, and quality gates.
+#
+# Design notes:
+#   * `dotnet test` uses the Microsoft.Testing.Platform (MTP) syntax. MTP is opted into in
+#     global.json ("test": { "runner": "Microsoft.Testing.Platform" }), and in MTP mode the
+#     solution is passed as `--solution <path>`, never as a bare positional argument.
+#   * `fetch-depth: 0` is required: MinVer walks the tag history to derive the package version,
+#     and SourceLink needs the commit metadata.
+#   * `CI: 'true'` is what turns on `ContinuousIntegrationBuild` in Directory.Build.props, which
+#     in turn enables deterministic, path-mapped builds.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege: every job here only reads the repository.
+permissions:
+  contents: read
+
+# Superseded runs on the same ref are worthless, so cancel them.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  CONFIGURATION: Release
+  # Consumed by Directory.Build.props to switch on ContinuousIntegrationBuild.
+  CI: 'true'
+  ContinuousIntegrationBuild: 'true'
+
+jobs:
+  build-test:
+    name: build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      # See every failing leg, not just the first one to fail.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # MinVer and SourceLink need the full history and the tags.
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # 10.0.x is the SDK that global.json pins and that builds every project. 8.0.x is listed
+          # as well because the test project multi-targets net8.0;net10.0 and its tests are
+          # executed, not just compiled, so the .NET 8 runtime has to be present. A runtime that
+          # merely happens to be preinstalled on the runner is not visible once setup-dotnet
+          # points DOTNET_ROOT at its own tool cache.
+          dotnet-version: |
+            10.0.x
+            8.0.x
+          # There are no packages.lock.json files in this repository, so point the cache key at
+          # the files that actually decide the dependency graph: the CPM version list and the
+          # project files. Bump a version in Directory.Packages.props and the cache rolls over.
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore TypeSafe.slnx
+
+      - name: Build
+        run: dotnet build TypeSafe.slnx -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Test
+        run: >
+          dotnet test --solution TypeSafe.slnx
+          -c ${{ env.CONFIGURATION }}
+          --no-build
+          --coverage
+          --results-directory ./TestResults
+
+      - name: Upload test results and coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            TestResults/**
+          # A leg that failed before producing results should not mask the real failure.
+          if-no-files-found: warn
+          retention-days: 7
+
+  format:
+    name: dotnet format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore TypeSafe.slnx
+
+      # Exits 2 when any file would be reformatted, 1 on an error, 0 when clean.
+      - name: Verify formatting
+        run: dotnet format TypeSafe.slnx --verify-no-changes --no-restore
+
+  secret-scan:
+    name: secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # A full history is required: the scan covers every commit the ref exposes, not just
+          # the tip.
+          fetch-depth: 0
+
+      # An SDK that reads API keys should not be the thing that leaks one. GitHub's own secret
+      # scanning covers public repositories, but this also catches a key that was committed and
+      # then removed, and it runs before review rather than after.
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Only required for organization-owned repositories. Leave the secret unset for a
+          # personal repository.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  markdownlint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Configuration comes from .markdownlint-cli2.jsonc at the repository root, which is the
+      # same file a local `npx markdownlint-cli2` run picks up.
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v24
+        with:
+          globs: '**/*.md'

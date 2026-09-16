@@ -1,0 +1,387 @@
+#nullable enable
+~override TypeSafe.RetryAttempt.Equals(object obj) -> bool
+~override TypeSafe.RetryAttempt.ToString() -> string
+~override TypeSafe.WeightedScore.Equals(object obj) -> bool
+~override TypeSafe.WeightedScore.ToString() -> string
+abstract TypeSafe.Answer.TryGetConfidence(out double confidence) -> bool
+abstract TypeSafe.Answer.Type.get -> string!
+abstract TypeSafe.Question.Type.get -> string!
+const TypeSafe.TypeSafeDefaults.ApiKeyEnvironmentVariable = "TYPESAFE_API_KEY" -> string!
+const TypeSafe.TypeSafeDefaults.ApproximateRequestTokenBudget = 32000 -> int
+const TypeSafe.TypeSafeDefaults.BaseUrlEnvironmentVariable = "TYPESAFE_BASE_URL" -> string!
+const TypeSafe.TypeSafeDefaults.DefaultBaseUrl = "https://api.typesafe.ai" -> string!
+const TypeSafe.TypeSafeDefaults.DefaultModel = "jev-latest" -> string!
+const TypeSafe.TypeSafeDefaults.DefaultModelEnvironmentVariable = "TYPESAFE_DEFAULT_MODEL" -> string!
+const TypeSafe.TypeSafeDefaults.LegacyEndpointEnvironmentVariable = "TYPESAFE_ENDPOINT" -> string!
+const TypeSafe.TypeSafeDefaults.LogLevelEnvironmentVariable = "TYPESAFE_LOG_LEVEL" -> string!
+const TypeSafe.TypeSafeDefaults.MaximumChoiceOptions = 255 -> int
+const TypeSafe.TypeSafeDefaults.MaximumScoreLevels = 10 -> int
+const TypeSafe.TypeSafeDefaults.MinimumScoreLevels = 2 -> int
+override TypeSafe.Answer.ToString() -> string!
+override TypeSafe.ChoiceAnswer.ToString() -> string!
+override TypeSafe.ChoiceAnswer.TryGetConfidence(out double confidence) -> bool
+override TypeSafe.ChoiceAnswer.Type.get -> string!
+override TypeSafe.ChoiceQuestion.Type.get -> string!
+override TypeSafe.ModelMetadata.Equals(object? obj) -> bool
+override TypeSafe.ModelMetadata.GetHashCode() -> int
+override TypeSafe.ModelMetadata.ToString() -> string!
+override TypeSafe.NoulAnswer.ToString() -> string!
+override TypeSafe.NoulAnswer.TryGetConfidence(out double confidence) -> bool
+override TypeSafe.NoulAnswer.Type.get -> string!
+override TypeSafe.NoulQuestion.Type.get -> string!
+override TypeSafe.Question.ToString() -> string!
+override TypeSafe.RawQuestion.Type.get -> string!
+override TypeSafe.RetryAttempt.GetHashCode() -> int
+override TypeSafe.ScoreAnswer.ToString() -> string!
+override TypeSafe.ScoreAnswer.TryGetConfidence(out double confidence) -> bool
+override TypeSafe.ScoreAnswer.Type.get -> string!
+override TypeSafe.ScoreQuestion.Type.get -> string!
+override TypeSafe.Serialization.AnswerJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> TypeSafe.Answer!
+override TypeSafe.Serialization.AnswerJsonConverter.Write(System.Text.Json.Utf8JsonWriter! writer, TypeSafe.Answer! value, System.Text.Json.JsonSerializerOptions! options) -> void
+override TypeSafe.Serialization.QuestionJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> TypeSafe.Question!
+override TypeSafe.Serialization.QuestionJsonConverter.Write(System.Text.Json.Utf8JsonWriter! writer, TypeSafe.Question! value, System.Text.Json.JsonSerializerOptions! options) -> void
+override TypeSafe.Serialization.SystemOneResultJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> TypeSafe.SystemOneResult!
+override TypeSafe.Serialization.SystemOneResultJsonConverter.Write(System.Text.Json.Utf8JsonWriter! writer, TypeSafe.SystemOneResult! value, System.Text.Json.JsonSerializerOptions! options) -> void
+override TypeSafe.UnknownAnswer.ToString() -> string!
+override TypeSafe.UnknownAnswer.TryGetConfidence(out double confidence) -> bool
+override TypeSafe.UnknownAnswer.Type.get -> string!
+override TypeSafe.Usage.Equals(object? obj) -> bool
+override TypeSafe.Usage.GetHashCode() -> int
+override TypeSafe.Usage.ToString() -> string!
+override TypeSafe.WeightedScore.GetHashCode() -> int
+static readonly TypeSafe.TypeSafeDefaults.DefaultTimeout -> System.TimeSpan
+static TypeSafe.CompositeScore.Profiles(System.Collections.Generic.IEnumerable<TypeSafe.WeightedScore>! parts, System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyDictionary<string!, double>!>! profiles) -> System.Collections.Generic.IReadOnlyDictionary<string!, double>!
+static TypeSafe.CompositeScore.Weighted(params TypeSafe.WeightedScore[]! parts) -> double
+static TypeSafe.CompositeScore.Weighted(System.Collections.Generic.IEnumerable<TypeSafe.WeightedScore>! parts) -> double
+static TypeSafe.ModelMetadata.operator ==(TypeSafe.ModelMetadata? left, TypeSafe.ModelMetadata? right) -> bool
+static TypeSafe.ModelMetadata.operator !=(TypeSafe.ModelMetadata? left, TypeSafe.ModelMetadata? right) -> bool
+static TypeSafe.ProbabilityMath.ExpectedLevel(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, double>>! probabilities) -> double
+static TypeSafe.ProbabilityMath.NormalizedEntropy(System.Collections.Generic.IEnumerable<double>! probabilities) -> double
+static TypeSafe.ProbabilityMath.Variance(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, double>>! probabilities) -> double
+static TypeSafe.RetryAttempt.operator ==(TypeSafe.RetryAttempt left, TypeSafe.RetryAttempt right) -> bool
+static TypeSafe.RetryAttempt.operator !=(TypeSafe.RetryAttempt left, TypeSafe.RetryAttempt right) -> bool
+static TypeSafe.RetryPolicy.Default.get -> TypeSafe.RetryPolicy!
+static TypeSafe.RetryPolicy.None.get -> TypeSafe.RetryPolicy!
+static TypeSafe.Serialization.TypeSafeJson.DeserializeAnswer(string! json) -> TypeSafe.Answer!
+static TypeSafe.Serialization.TypeSafeJson.DeserializeQuestion(string! json) -> TypeSafe.Question!
+static TypeSafe.Serialization.TypeSafeJson.DeserializeResult(string! json) -> TypeSafe.SystemOneResult!
+static TypeSafe.Serialization.TypeSafeJson.Options.get -> System.Text.Json.JsonSerializerOptions!
+static TypeSafe.Serialization.TypeSafeJson.Serialize(TypeSafe.Answer! answer) -> string!
+static TypeSafe.Serialization.TypeSafeJson.Serialize(TypeSafe.Question! question) -> string!
+static TypeSafe.Serialization.TypeSafeJson.Serialize(TypeSafe.SystemOneResult! result) -> string!
+static TypeSafe.Usage.operator ==(TypeSafe.Usage? left, TypeSafe.Usage? right) -> bool
+static TypeSafe.Usage.operator !=(TypeSafe.Usage? left, TypeSafe.Usage? right) -> bool
+static TypeSafe.WeightedScore.operator ==(TypeSafe.WeightedScore left, TypeSafe.WeightedScore right) -> bool
+static TypeSafe.WeightedScore.operator !=(TypeSafe.WeightedScore left, TypeSafe.WeightedScore right) -> bool
+TypeSafe.Answer
+TypeSafe.Answer.AdditionalProperties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>!
+TypeSafe.Answer.Answer(string! id, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.Answer.Id.get -> string!
+TypeSafe.ChoiceAnswer
+TypeSafe.ChoiceAnswer.ChoiceAnswer(string! id, string! label, System.Collections.Generic.IReadOnlyDictionary<string!, double>! probabilities, double confidence, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ChoiceAnswer.Confidence.get -> double
+TypeSafe.ChoiceAnswer.Label.get -> string!
+TypeSafe.ChoiceAnswer.NormalizedEntropy() -> double
+TypeSafe.ChoiceAnswer.Probabilities.get -> System.Collections.Generic.IReadOnlyDictionary<string!, double>!
+TypeSafe.ChoiceAnswer.ProbabilityOf(string! label) -> double
+TypeSafe.ChoiceAnswer.ProbabilityOrDefault(string! label) -> double?
+TypeSafe.ChoiceAnswer.Ranked() -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, double>>!
+TypeSafe.ChoiceAnswer.Top(int count) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, double>>!
+TypeSafe.ChoiceAnswer.TopLabel.get -> string?
+TypeSafe.ChoiceAnswer.TopProbability.get -> double
+TypeSafe.ChoiceAnswer.TryGetProbability(string! label, out double probability) -> bool
+TypeSafe.ChoiceQuestion
+TypeSafe.ChoiceQuestion.ChoiceQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IEnumerable<string!>! labels, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ChoiceQuestion.ChoiceQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string?>>! criteria, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ChoiceQuestion.ChoiceQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, System.Text.Json.Nodes.JsonNode?>>! criteria, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ChoiceQuestion.Criteria.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>!
+TypeSafe.ChoiceQuestion.Labels.get -> System.Collections.Generic.IReadOnlyList<string!>!
+TypeSafe.CompositeScore
+TypeSafe.IModelsResource
+TypeSafe.IModelsResource.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.ModelsResult!>!
+TypeSafe.IQuestion<TAnswer>
+TypeSafe.IQuestion<TAnswer>.Id.get -> string!
+TypeSafe.ITypeSafeClient
+TypeSafe.ITypeSafeClient.Models.get -> TypeSafe.IModelsResource!
+TypeSafe.ITypeSafeClient.SystemOneAsync<TState>(TState state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Text.Json.Serialization.Metadata.JsonTypeInfo<TState>! stateTypeInfo, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.ITypeSafeClient.SystemOneAsync<TState>(TState state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.ITypeSafeClient.SystemOneAsync(string! state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.ITypeSafeClient.SystemOneAsync(System.Text.Json.Nodes.JsonNode? state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.ITypeSafeClient.SystemOneAsync(TypeSafe.SystemOneRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.ModelMetadata
+TypeSafe.ModelMetadata.<Clone>$() -> TypeSafe.ModelMetadata!
+TypeSafe.ModelMetadata.Deconstruct(out string! Name, out string! Description, out string! ReleaseDate) -> void
+TypeSafe.ModelMetadata.Description.get -> string!
+TypeSafe.ModelMetadata.Description.init -> void
+TypeSafe.ModelMetadata.Equals(TypeSafe.ModelMetadata? other) -> bool
+TypeSafe.ModelMetadata.ModelMetadata(string! Name, string! Description, string! ReleaseDate) -> void
+TypeSafe.ModelMetadata.Name.get -> string!
+TypeSafe.ModelMetadata.Name.init -> void
+TypeSafe.ModelMetadata.ReleaseDate.get -> string!
+TypeSafe.ModelMetadata.ReleaseDate.init -> void
+TypeSafe.ModelsResult
+TypeSafe.ModelsResult.Models.get -> System.Collections.Generic.IReadOnlyList<TypeSafe.ModelMetadata!>!
+TypeSafe.ModelsResult.RawJson.get -> System.Text.Json.JsonElement
+TypeSafe.ModelsResult.RequestId.get -> string?
+TypeSafe.NoulAnswer
+TypeSafe.NoulAnswer.NoulAnswer(string! id, double probability, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.NoulAnswer.Probability.get -> double
+TypeSafe.NoulCriteria
+TypeSafe.NoulCriteria.False.get -> System.Text.Json.Nodes.JsonNode?
+TypeSafe.NoulCriteria.NoulCriteria(System.Text.Json.Nodes.JsonNode? true = null, System.Text.Json.Nodes.JsonNode? false = null) -> void
+TypeSafe.NoulCriteria.True.get -> System.Text.Json.Nodes.JsonNode?
+TypeSafe.NoulQuestion
+TypeSafe.NoulQuestion.Criteria.get -> TypeSafe.NoulCriteria?
+TypeSafe.NoulQuestion.NoulQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions = null, TypeSafe.NoulCriteria? criteria = null, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ProbabilityMath
+TypeSafe.Question
+TypeSafe.Question.AdditionalProperties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>!
+TypeSafe.Question.Id.get -> string!
+TypeSafe.Question.Instructions.get -> System.Text.Json.Nodes.JsonNode?
+TypeSafe.Question.Question(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.QuestionSet
+TypeSafe.QuestionSet.Add(TypeSafe.Question! question) -> TypeSafe.QuestionSet!
+TypeSafe.QuestionSet.Contains(string! id) -> bool
+TypeSafe.QuestionSet.Count.get -> int
+TypeSafe.QuestionSet.GetEnumerator() -> System.Collections.Generic.IEnumerator<TypeSafe.Question!>!
+TypeSafe.QuestionSet.QuestionSet() -> void
+TypeSafe.QuestionSet.QuestionSet(System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions) -> void
+TypeSafe.QuestionSet.this[string! id].get -> TypeSafe.Question!
+TypeSafe.QuestionSet.TryGet(string! id, out TypeSafe.Question? question) -> bool
+TypeSafe.RawQuestion
+TypeSafe.RawQuestion.Body.get -> System.Text.Json.Nodes.JsonObject!
+TypeSafe.RawQuestion.RawQuestion(string! id, string! type, System.Text.Json.Nodes.JsonObject! body) -> void
+TypeSafe.RetryAttempt
+TypeSafe.RetryAttempt.Attempt.get -> int
+TypeSafe.RetryAttempt.Attempt.init -> void
+TypeSafe.RetryAttempt.Deconstruct(out int Attempt, out System.TimeSpan Delay, out System.Exception! Exception) -> void
+TypeSafe.RetryAttempt.Delay.get -> System.TimeSpan
+TypeSafe.RetryAttempt.Delay.init -> void
+TypeSafe.RetryAttempt.Equals(TypeSafe.RetryAttempt other) -> bool
+TypeSafe.RetryAttempt.Exception.get -> System.Exception!
+TypeSafe.RetryAttempt.Exception.init -> void
+TypeSafe.RetryAttempt.RetryAttempt() -> void
+TypeSafe.RetryAttempt.RetryAttempt(int Attempt, System.TimeSpan Delay, System.Exception! Exception) -> void
+TypeSafe.RetryPolicy
+TypeSafe.RetryPolicy.BackoffInitial.get -> System.TimeSpan
+TypeSafe.RetryPolicy.BackoffInitial.init -> void
+TypeSafe.RetryPolicy.BackoffJitter.get -> double
+TypeSafe.RetryPolicy.BackoffJitter.init -> void
+TypeSafe.RetryPolicy.BackoffMax.get -> System.TimeSpan
+TypeSafe.RetryPolicy.BackoffMax.init -> void
+TypeSafe.RetryPolicy.HttpStatuses.get -> System.Collections.Generic.IReadOnlyList<int>!
+TypeSafe.RetryPolicy.HttpStatuses.init -> void
+TypeSafe.RetryPolicy.MaxRetries.get -> int
+TypeSafe.RetryPolicy.MaxRetries.init -> void
+TypeSafe.RetryPolicy.MaxRetryAfter.get -> System.TimeSpan
+TypeSafe.RetryPolicy.MaxRetryAfter.init -> void
+TypeSafe.RetryPolicy.OnRetry.get -> System.Action<TypeSafe.RetryAttempt>?
+TypeSafe.RetryPolicy.OnRetry.init -> void
+TypeSafe.RetryPolicy.RespectRetryAfter.get -> bool
+TypeSafe.RetryPolicy.RespectRetryAfter.init -> void
+TypeSafe.RetryPolicy.RetryConnectionErrors.get -> bool
+TypeSafe.RetryPolicy.RetryConnectionErrors.init -> void
+TypeSafe.RetryPolicy.RetryPolicy() -> void
+TypeSafe.RetryPolicy.RetryTimeoutErrors.get -> bool
+TypeSafe.RetryPolicy.RetryTimeoutErrors.init -> void
+TypeSafe.RetryPolicy.ShouldRetry.get -> System.Func<System.Exception!, bool>?
+TypeSafe.RetryPolicy.ShouldRetry.init -> void
+TypeSafe.RetryPolicy.TotalBudget.get -> System.TimeSpan?
+TypeSafe.RetryPolicy.TotalBudget.init -> void
+TypeSafe.ScoreAnswer
+TypeSafe.ScoreAnswer.Confidence.get -> double
+TypeSafe.ScoreAnswer.ExpectedLevel.get -> double
+TypeSafe.ScoreAnswer.LegendAtLevel(int level) -> System.Text.Json.Nodes.JsonNode?
+TypeSafe.ScoreAnswer.Legend.get -> System.Collections.Generic.IReadOnlyDictionary<int, System.Text.Json.Nodes.JsonNode?>!
+TypeSafe.ScoreAnswer.LegendTextAtLevel(int level) -> string?
+TypeSafe.ScoreAnswer.LevelCount.get -> int
+TypeSafe.ScoreAnswer.MaxLevel.get -> int
+TypeSafe.ScoreAnswer.NormalizedEntropy() -> double
+TypeSafe.ScoreAnswer.NormalizedScore.get -> double
+TypeSafe.ScoreAnswer.Probabilities.get -> System.Collections.Generic.IReadOnlyDictionary<int, double>!
+TypeSafe.ScoreAnswer.ProbabilityAtLevel(int level) -> double
+TypeSafe.ScoreAnswer.ScoreAnswer(string! id, double score, System.Collections.Generic.IReadOnlyDictionary<int, System.Text.Json.Nodes.JsonNode?>! legend, System.Collections.Generic.IReadOnlyDictionary<int, double>! probabilities, double confidence, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ScoreAnswer.Score.get -> double
+TypeSafe.ScoreAnswer.TryGetProbability(int level, out double probability) -> bool
+TypeSafe.ScoreAnswer.Variance.get -> double
+TypeSafe.ScoreQuestion
+TypeSafe.ScoreQuestion.Criteria.get -> System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonNode?>!
+TypeSafe.ScoreQuestion.LevelCount.get -> int
+TypeSafe.ScoreQuestion.ScoreQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IEnumerable<string!>! levels, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.ScoreQuestion.ScoreQuestion(string! id, System.Text.Json.Nodes.JsonNode? instructions, System.Collections.Generic.IEnumerable<System.Text.Json.Nodes.JsonNode?>! levels, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.Serialization.AnswerJsonConverter
+TypeSafe.Serialization.AnswerJsonConverter.AnswerJsonConverter() -> void
+TypeSafe.Serialization.QuestionJsonConverter
+TypeSafe.Serialization.QuestionJsonConverter.QuestionJsonConverter() -> void
+TypeSafe.Serialization.SystemOneResultJsonConverter
+TypeSafe.Serialization.SystemOneResultJsonConverter.SystemOneResultJsonConverter() -> void
+TypeSafe.Serialization.TypeSafeJson
+TypeSafe.SystemOneRequest
+TypeSafe.SystemOneRequest.AdditionalProperties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>?
+TypeSafe.SystemOneRequest.AdditionalProperties.init -> void
+TypeSafe.SystemOneRequest.Model.get -> string?
+TypeSafe.SystemOneRequest.Model.init -> void
+TypeSafe.SystemOneRequest.Options.get -> TypeSafe.TypeSafeRequestOptions?
+TypeSafe.SystemOneRequest.Options.init -> void
+TypeSafe.SystemOneRequest.Questions.get -> System.Collections.Generic.IEnumerable<TypeSafe.Question!>!
+TypeSafe.SystemOneRequest.Questions.init -> void
+TypeSafe.SystemOneRequest.State.get -> System.Text.Json.Nodes.JsonNode?
+TypeSafe.SystemOneRequest.State.init -> void
+TypeSafe.SystemOneRequest.SystemOneRequest() -> void
+TypeSafe.SystemOneResult
+TypeSafe.SystemOneResult.Answers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, TypeSafe.Answer!>!
+TypeSafe.SystemOneResult.Choices.get -> System.Collections.Generic.IReadOnlyDictionary<string!, TypeSafe.ChoiceAnswer!>!
+TypeSafe.SystemOneResult.Choice(string! id) -> TypeSafe.ChoiceAnswer!
+TypeSafe.SystemOneResult.Contains(string! id) -> bool
+TypeSafe.SystemOneResult.Get<TAnswer>(TypeSafe.IQuestion<TAnswer!>! question) -> TAnswer!
+TypeSafe.SystemOneResult.Get(string! id) -> TypeSafe.Answer!
+TypeSafe.SystemOneResult.Ids.get -> System.Collections.Generic.IEnumerable<string!>!
+TypeSafe.SystemOneResult.Model.get -> string!
+TypeSafe.SystemOneResult.Nouls.get -> System.Collections.Generic.IReadOnlyDictionary<string!, TypeSafe.NoulAnswer!>!
+TypeSafe.SystemOneResult.Noul(string! id) -> TypeSafe.NoulAnswer!
+TypeSafe.SystemOneResult.RawJson.get -> System.Text.Json.JsonElement
+TypeSafe.SystemOneResult.RequestId.get -> string?
+TypeSafe.SystemOneResult.Scores.get -> System.Collections.Generic.IReadOnlyDictionary<string!, TypeSafe.ScoreAnswer!>!
+TypeSafe.SystemOneResult.Score(string! id) -> TypeSafe.ScoreAnswer!
+TypeSafe.SystemOneResult.TryGet<TAnswer>(TypeSafe.IQuestion<TAnswer!>! question, out TAnswer? answer) -> bool
+TypeSafe.SystemOneResult.TryGet(string! id, out TypeSafe.Answer? answer) -> bool
+TypeSafe.SystemOneResult.UnknownAnswers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, TypeSafe.UnknownAnswer!>!
+TypeSafe.SystemOneResult.Usage.get -> TypeSafe.Usage?
+TypeSafe.TypeSafeApiException
+TypeSafe.TypeSafeApiException.Body.get -> System.Text.Json.JsonElement?
+TypeSafe.TypeSafeApiException.Details.get -> TypeSafe.TypeSafeErrorDetails?
+TypeSafe.TypeSafeApiException.DocumentationUrl.get -> string?
+TypeSafe.TypeSafeApiException.Endpoint.get -> string?
+TypeSafe.TypeSafeApiException.ErrorMessage.get -> string?
+TypeSafe.TypeSafeApiException.ErrorType.get -> string?
+TypeSafe.TypeSafeApiException.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>!
+TypeSafe.TypeSafeApiException.RequestId.get -> string?
+TypeSafe.TypeSafeApiException.StatusCode.get -> System.Net.HttpStatusCode
+TypeSafe.TypeSafeApiException.TypeSafeApiException() -> void
+TypeSafe.TypeSafeApiException.TypeSafeApiException(string! message) -> void
+TypeSafe.TypeSafeApiException.TypeSafeApiException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeApiException.TypeSafeApiException(string! message, System.Net.HttpStatusCode statusCode, TypeSafe.TypeSafeErrorDetails? details) -> void
+TypeSafe.TypeSafeAuthenticationException
+TypeSafe.TypeSafeAuthenticationException.TypeSafeAuthenticationException() -> void
+TypeSafe.TypeSafeAuthenticationException.TypeSafeAuthenticationException(string! message) -> void
+TypeSafe.TypeSafeAuthenticationException.TypeSafeAuthenticationException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeBadRequestException
+TypeSafe.TypeSafeBadRequestException.TypeSafeBadRequestException() -> void
+TypeSafe.TypeSafeBadRequestException.TypeSafeBadRequestException(string! message) -> void
+TypeSafe.TypeSafeBadRequestException.TypeSafeBadRequestException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeClient
+TypeSafe.TypeSafeClient.Dispose() -> void
+TypeSafe.TypeSafeClient.Models.get -> TypeSafe.IModelsResource!
+TypeSafe.TypeSafeClientOptions
+TypeSafe.TypeSafeClientOptions.ApiKey.get -> string?
+TypeSafe.TypeSafeClientOptions.ApiKey.set -> void
+TypeSafe.TypeSafeClientOptions.BaseUrl.get -> System.Uri?
+TypeSafe.TypeSafeClientOptions.BaseUrl.set -> void
+TypeSafe.TypeSafeClientOptions.Clone() -> TypeSafe.TypeSafeClientOptions!
+TypeSafe.TypeSafeClientOptions.DefaultHeaders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+TypeSafe.TypeSafeClientOptions.DefaultHeaders.set -> void
+TypeSafe.TypeSafeClientOptions.LoggerFactory.get -> Microsoft.Extensions.Logging.ILoggerFactory?
+TypeSafe.TypeSafeClientOptions.LoggerFactory.set -> void
+TypeSafe.TypeSafeClientOptions.Model.get -> string?
+TypeSafe.TypeSafeClientOptions.Model.set -> void
+TypeSafe.TypeSafeClientOptions.Retry.get -> TypeSafe.RetryPolicy!
+TypeSafe.TypeSafeClientOptions.Retry.set -> void
+TypeSafe.TypeSafeClientOptions.Timeout.get -> System.TimeSpan
+TypeSafe.TypeSafeClientOptions.Timeout.set -> void
+TypeSafe.TypeSafeClientOptions.TimeProvider.get -> System.TimeProvider?
+TypeSafe.TypeSafeClientOptions.TimeProvider.set -> void
+TypeSafe.TypeSafeClientOptions.TypeSafeClientOptions() -> void
+TypeSafe.TypeSafeClientOptions.UserAgent.get -> string?
+TypeSafe.TypeSafeClientOptions.UserAgent.set -> void
+TypeSafe.TypeSafeClient.SystemOneAsync<TState>(TState state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Text.Json.Serialization.Metadata.JsonTypeInfo<TState>! stateTypeInfo, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.TypeSafeClient.SystemOneAsync<TState>(TState state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.TypeSafeClient.SystemOneAsync(string! state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.TypeSafeClient.SystemOneAsync(System.Text.Json.Nodes.JsonNode? state, System.Collections.Generic.IEnumerable<TypeSafe.Question!>! questions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.TypeSafeClient.SystemOneAsync(TypeSafe.SystemOneRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TypeSafe.SystemOneResult!>!
+TypeSafe.TypeSafeClient.TypeSafeClient(string! apiKey, TypeSafe.TypeSafeClientOptions? options = null, System.Net.Http.HttpClient? httpClient = null) -> void
+TypeSafe.TypeSafeClient.TypeSafeClient(TypeSafe.TypeSafeClientOptions? options = null, System.Net.Http.HttpClient? httpClient = null) -> void
+TypeSafe.TypeSafeConfigurationException
+TypeSafe.TypeSafeConfigurationException.TypeSafeConfigurationException() -> void
+TypeSafe.TypeSafeConfigurationException.TypeSafeConfigurationException(string! message) -> void
+TypeSafe.TypeSafeConfigurationException.TypeSafeConfigurationException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeConnectionException
+TypeSafe.TypeSafeConnectionException.TypeSafeConnectionException() -> void
+TypeSafe.TypeSafeConnectionException.TypeSafeConnectionException(string! message) -> void
+TypeSafe.TypeSafeConnectionException.TypeSafeConnectionException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeDefaults
+TypeSafe.TypeSafeErrorDetails
+TypeSafe.TypeSafeErrorDetails.Body.get -> System.Text.Json.JsonElement?
+TypeSafe.TypeSafeErrorDetails.ErrorType.get -> string?
+TypeSafe.TypeSafeErrorDetails.Message.get -> string?
+TypeSafe.TypeSafeErrorDetails.TypeSafeErrorDetails(string? errorType, string? message, System.Text.Json.JsonElement? body) -> void
+TypeSafe.TypeSafeException
+TypeSafe.TypeSafeException.TypeSafeException() -> void
+TypeSafe.TypeSafeException.TypeSafeException(string! message) -> void
+TypeSafe.TypeSafeException.TypeSafeException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeNotFoundException
+TypeSafe.TypeSafeNotFoundException.TypeSafeNotFoundException() -> void
+TypeSafe.TypeSafeNotFoundException.TypeSafeNotFoundException(string! message) -> void
+TypeSafe.TypeSafeNotFoundException.TypeSafeNotFoundException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafePermissionDeniedException
+TypeSafe.TypeSafePermissionDeniedException.TypeSafePermissionDeniedException() -> void
+TypeSafe.TypeSafePermissionDeniedException.TypeSafePermissionDeniedException(string! message) -> void
+TypeSafe.TypeSafePermissionDeniedException.TypeSafePermissionDeniedException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeRateLimitException
+TypeSafe.TypeSafeRateLimitException.RetryAfter.get -> System.TimeSpan?
+TypeSafe.TypeSafeRateLimitException.RetryAfter.init -> void
+TypeSafe.TypeSafeRateLimitException.TypeSafeRateLimitException() -> void
+TypeSafe.TypeSafeRateLimitException.TypeSafeRateLimitException(string! message) -> void
+TypeSafe.TypeSafeRateLimitException.TypeSafeRateLimitException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeRequestOptions
+TypeSafe.TypeSafeRequestOptions.AdditionalBodyProperties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>?
+TypeSafe.TypeSafeRequestOptions.AdditionalBodyProperties.init -> void
+TypeSafe.TypeSafeRequestOptions.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+TypeSafe.TypeSafeRequestOptions.Headers.init -> void
+TypeSafe.TypeSafeRequestOptions.Model.get -> string?
+TypeSafe.TypeSafeRequestOptions.Model.init -> void
+TypeSafe.TypeSafeRequestOptions.Retry.get -> TypeSafe.RetryPolicy?
+TypeSafe.TypeSafeRequestOptions.Retry.init -> void
+TypeSafe.TypeSafeRequestOptions.Timeout.get -> System.TimeSpan?
+TypeSafe.TypeSafeRequestOptions.Timeout.init -> void
+TypeSafe.TypeSafeRequestOptions.TypeSafeRequestOptions() -> void
+TypeSafe.TypeSafeResponseValidationException
+TypeSafe.TypeSafeResponseValidationException.FieldPath.get -> string?
+TypeSafe.TypeSafeResponseValidationException.TypeSafeResponseValidationException() -> void
+TypeSafe.TypeSafeResponseValidationException.TypeSafeResponseValidationException(string! message) -> void
+TypeSafe.TypeSafeResponseValidationException.TypeSafeResponseValidationException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeServerException
+TypeSafe.TypeSafeServerException.TypeSafeServerException() -> void
+TypeSafe.TypeSafeServerException.TypeSafeServerException(string! message) -> void
+TypeSafe.TypeSafeServerException.TypeSafeServerException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeTimeoutException
+TypeSafe.TypeSafeTimeoutException.Timeout.get -> System.TimeSpan
+TypeSafe.TypeSafeTimeoutException.Timeout.init -> void
+TypeSafe.TypeSafeTimeoutException.TypeSafeTimeoutException() -> void
+TypeSafe.TypeSafeTimeoutException.TypeSafeTimeoutException(string! message) -> void
+TypeSafe.TypeSafeTimeoutException.TypeSafeTimeoutException(string! message, System.Exception! innerException) -> void
+TypeSafe.TypeSafeUnprocessableEntityException
+TypeSafe.TypeSafeUnprocessableEntityException.TypeSafeUnprocessableEntityException() -> void
+TypeSafe.TypeSafeUnprocessableEntityException.TypeSafeUnprocessableEntityException(string! message) -> void
+TypeSafe.TypeSafeUnprocessableEntityException.TypeSafeUnprocessableEntityException(string! message, System.Exception! innerException) -> void
+TypeSafe.UnknownAnswer
+TypeSafe.UnknownAnswer.Raw.get -> System.Text.Json.JsonElement
+TypeSafe.UnknownAnswer.UnknownAnswer(string! id, string! type, System.Text.Json.JsonElement raw, System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonNode?>? additionalProperties = null) -> void
+TypeSafe.Usage
+TypeSafe.Usage.<Clone>$() -> TypeSafe.Usage!
+TypeSafe.Usage.Deconstruct(out int? InputTokens, out int? OutputTokens) -> void
+TypeSafe.Usage.Equals(TypeSafe.Usage? other) -> bool
+TypeSafe.Usage.InputTokens.get -> int?
+TypeSafe.Usage.InputTokens.init -> void
+TypeSafe.Usage.OutputTokens.get -> int?
+TypeSafe.Usage.OutputTokens.init -> void
+TypeSafe.Usage.TotalTokens.get -> int?
+TypeSafe.Usage.Usage(int? InputTokens, int? OutputTokens) -> void
+TypeSafe.WeightedScore
+TypeSafe.WeightedScore.Answer.get -> TypeSafe.ScoreAnswer!
+TypeSafe.WeightedScore.Answer.init -> void
+TypeSafe.WeightedScore.Deconstruct(out TypeSafe.ScoreAnswer! Answer, out double Weight) -> void
+TypeSafe.WeightedScore.Equals(TypeSafe.WeightedScore other) -> bool
+TypeSafe.WeightedScore.WeightedScore() -> void
+TypeSafe.WeightedScore.WeightedScore(TypeSafe.ScoreAnswer! Answer, double Weight) -> void
+TypeSafe.WeightedScore.Weight.get -> double
+TypeSafe.WeightedScore.Weight.init -> void

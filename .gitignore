@@ -1,0 +1,73 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+*.binlog
+*.tlog
+
+# Test / coverage output
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+packages/
+!**/packages/build/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.DotSettings.user
+launchSettings.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Benchmark results
+BenchmarkDotNet.Artifacts/
+
+# Local-only agent/research scratch (not part of the published repository)
+.research/
+.dotnet-home/
+.nuget/
+.egg-investigation/
+.aot-research/
+*.html
+Bad.cs
+f.cs
+l.cs
+q.cs
+x.cs
+cc.md
+cl.md
+dr.md
+g.md
+m.md
+mc.md
+pc.md
+r.md
+rd.md
+s.md
+sl.nupkg
+w.yml
+assertion-library-research-2026.md
+dotnet-test-frameworks-2026-09.md
+verify-snapshot-testing-2026-09.md

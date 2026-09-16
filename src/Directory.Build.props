@@ -1,0 +1,75 @@
+<Project>
+
+  <!--
+    A Directory.Build.props stops MSBuild's upward search, so the repository-root file has to be
+    imported explicitly or every project under src/ silently loses the shared compiler settings.
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!--
+    Settings for the two shipping packages. Everything here ends up on nuget.org, so the
+    package metadata is treated as part of the product.
+  -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+
+    <Product>TypeSafe SDK for .NET</Product>
+    <Authors>JEV and contributors</Authors>
+    <Company>JEV</Company>
+    <Copyright>Copyright (c) 2026 JEV and contributors</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/JEV/typesafe-dotnet-sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JEV/typesafe-dotnet-sdk</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>typesafe;ai;systemone;jev;classification;confidence;llm;sdk;client</PackageTags>
+    <Description>Official-style .NET client for the TypeSafe AI System One API. Ask typed yes/no (noul), choice, and score questions about any state and get structured, confidence-scored answers back.</Description>
+
+    <!-- Symbols: a .snupkg alongside the .nupkg, with everything embedded so the
+         package is self-contained for source-stepping. -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Trimming/AOT: the whole library is annotated and analyzer-clean. -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+
+    <!-- Public API surface is tracked in PublicAPI.*.txt; RS0016/RS0017 make an
+         accidental breaking change a build failure rather than a code review question. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+
+    <!--
+      RS0026 warns against adding multiple overloads that take optional parameters, because a
+      later parameter addition can rebind existing compiled call sites. Every overload here ends
+      in `CancellationToken cancellationToken = default`, which is the established .NET SDK
+      convention and the ergonomic default callers expect; removing the default would force
+      `CancellationToken.None` at every call site. The risk RS0026 guards against is managed
+      instead by the PublicAPI analyzer plus package validation, which make any signature change
+      to an already shipped overload a build failure.
+    -->
+    <NoWarn>$(NoWarn);RS0026</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+</Project>

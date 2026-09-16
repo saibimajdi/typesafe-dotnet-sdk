@@ -1,0 +1,112 @@
+namespace TypeSafe;
+
+/// <summary>
+/// Environment variable names read by the SDK, and the defaults applied when neither an explicit
+/// option nor an environment variable supplies a value.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Precedence is always: explicit client option, then environment variable, then the default
+/// below. Empty or whitespace-only environment values are treated as unset.
+/// </para>
+/// <para>
+/// The names match the TypeSafe Python and JavaScript SDKs, so one set of environment variables
+/// configures every TypeSafe SDK in a polyglot deployment.
+/// </para>
+/// </remarks>
+public static class TypeSafeDefaults
+{
+    /// <summary>
+    /// Environment variable holding the API key. Required unless the key is passed to the client
+    /// constructor directly.
+    /// </summary>
+    public const string ApiKeyEnvironmentVariable = "TYPESAFE_API_KEY";
+
+    /// <summary>
+    /// Environment variable overriding the API root URL.
+    /// </summary>
+    public const string BaseUrlEnvironmentVariable = "TYPESAFE_BASE_URL";
+
+    /// <summary>
+    /// Environment variable overriding the default model.
+    /// </summary>
+    public const string DefaultModelEnvironmentVariable = "TYPESAFE_DEFAULT_MODEL";
+
+    /// <summary>
+    /// Environment variable setting the log level. Accepts <c>trace</c>, <c>debug</c>,
+    /// <c>information</c> (<c>info</c>), <c>warning</c> (<c>warn</c>), <c>error</c>,
+    /// <c>critical</c>, <c>none</c>, and <c>off</c>.
+    /// </summary>
+    public const string LogLevelEnvironmentVariable = "TYPESAFE_LOG_LEVEL";
+
+    /// <summary>
+    /// Environment variable overriding the API root URL, accepted as an undocumented alias of
+    /// <see cref="BaseUrlEnvironmentVariable"/>.
+    /// </summary>
+    /// <remarks>
+    /// The TypeSafe cookbooks use <c>TYPESAFE_ENDPOINT</c> for the same purpose while the SDK
+    /// reference pages document <c>TYPESAFE_BASE_URL</c>. Both are honoured so that either style
+    /// of deployment configuration works; <see cref="BaseUrlEnvironmentVariable"/> wins when
+    /// both are set.
+    /// </remarks>
+    public const string LegacyEndpointEnvironmentVariable = "TYPESAFE_ENDPOINT";
+
+    /// <summary>
+    /// The API root used when neither an explicit option nor an environment variable supplies one.
+    /// </summary>
+    public const string DefaultBaseUrl = "https://api.typesafe.ai";
+
+    /// <summary>
+    /// The model used when neither an explicit option nor an environment variable supplies one.
+    /// </summary>
+    /// <remarks>
+    /// <c>jev-latest</c> is an alias. The response's <see cref="SystemOneResult.Model"/> reports
+    /// the concrete version the alias resolved to, such as <c>jev-1.13.0</c>, and the alias can
+    /// resolve differently over time.
+    /// </remarks>
+    public const string DefaultModel = "jev-latest";
+
+    /// <summary>
+    /// The timeout applied to a single HTTP attempt.
+    /// </summary>
+    /// <remarks>
+    /// This is the per-attempt timeout. It is distinct from
+    /// <see cref="RetryPolicy.TotalBudget"/>, which bounds the whole call including every retry
+    /// and every delay.
+    /// </remarks>
+    public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(10);
+
+    /// <summary>
+    /// The number of levels a Score rubric may contain, inclusive.
+    /// </summary>
+    public const int MinimumScoreLevels = 2;
+
+    /// <summary>
+    /// The largest number of levels a Score rubric may contain, inclusive.
+    /// </summary>
+    /// <remarks>
+    /// A rubric of eleven levels is rejected by the API.
+    /// </remarks>
+    public const int MaximumScoreLevels = 10;
+
+    /// <summary>
+    /// The largest number of options a Choice may offer, inclusive.
+    /// </summary>
+    /// <remarks>
+    /// The API accepts at most 255 options. The documentation also notes that a Choice "works
+    /// reliably up to roughly 240 options", so treat 255 as the hard cap and 240 as a practical
+    /// ceiling worth staying under.
+    /// </remarks>
+    public const int MaximumChoiceOptions = 255;
+
+    /// <summary>
+    /// The approximate number of tokens shared between <c>state</c> and <c>questions</c> in a
+    /// single request, equivalent to roughly 150,000 characters of English text.
+    /// </summary>
+    /// <remarks>
+    /// The API publishes no token-counting endpoint, so the SDK cannot enforce this. It is
+    /// documented here so callers can size their batches. Batching every question into one
+    /// request is dramatically cheaper and faster than one request per question.
+    /// </remarks>
+    public const int ApproximateRequestTokenBudget = 32_000;
+}

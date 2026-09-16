@@ -1,0 +1,91 @@
+# Keeps dependencies current with as little noise as possible.
+#
+# Version updates arrive weekly and are grouped, so a routine week produces a small number of pull
+# requests rather than a dozen. Security updates are not grouped, not delayed by a cooldown, and do
+# not count against `open-pull-requests-limit`.
+version: 2
+updates:
+  # NuGet. Every version in this repository is declared once, in Directory.Packages.props (Central
+  # Package Management), which is why `directory: "/"` is enough to see all of them.
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 10
+    labels: [dependencies, nuget]
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    # Do not adopt a release the day it lands; let the ecosystem find the obvious breakages first.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+    groups:
+      # The framework packages move together and are always reviewed as a set.
+      microsoft-extensions:
+        patterns:
+          - Microsoft.Extensions.*
+        update-types: [minor, patch]
+      # Build-time-only packages: analyzers, SourceLink, MinVer.
+      build-tooling:
+        patterns:
+          - MinVer
+          - Microsoft.SourceLink.*
+          - Microsoft.CodeAnalysis.PublicApiAnalyzers
+          - Meziantou.Analyzer
+        update-types: [minor, patch]
+      # Test-only churn in one pull request per week.
+      test-dependencies:
+        patterns:
+          - xunit*
+          - Microsoft.NET.Test.Sdk
+          - Microsoft.Testing.Extensions.*
+        update-types: [minor, patch]
+      # Everything else, minor and patch only, one pull request per dependency.
+      other:
+        patterns: ['*']
+        exclude-patterns:
+          - Microsoft.Extensions.*
+          - MinVer
+          - Microsoft.SourceLink.*
+          - Microsoft.CodeAnalysis.PublicApiAnalyzers
+          - Meziantou.Analyzer
+          - xunit*
+          - Microsoft.NET.Test.Sdk
+          - Microsoft.Testing.Extensions.*
+        group-by: dependency-name
+        update-types: [minor, patch]
+    ignore:
+      # A major version of a dependency is a deliberate decision, not a routine bump. Open an issue
+      # instead: a major bump of Microsoft.Extensions.* in a library is a breaking change for
+      # consumers' dependency graphs even when the SDK's own API does not move.
+      - dependency-name: '*'
+        update-types: [version-update:semver-major]
+
+  # GitHub Actions. Bumps the workflow files under .github/workflows.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: '06:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    labels: [dependencies, github-actions]
+    commit-message:
+      prefix: 'ci(deps)'
+    cooldown:
+      default-days: 7
+    groups:
+      # CodeQL's actions must move as a set: init, analyze, and upload-sarif are released together.
+      codeql:
+        patterns:
+          - github/codeql-action/*
+      actions:
+        patterns: ['*']
+        exclude-patterns:
+          - github/codeql-action/*
+        update-types: [minor, patch]

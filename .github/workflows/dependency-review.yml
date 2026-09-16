@@ -1,0 +1,37 @@
+# Fails a pull request that introduces a dependency with a known vulnerability.
+#
+# This only runs on `pull_request`: the action compares the dependency graph of the base commit
+# with the head commit, which is exactly what a pull request provides.
+name: Dependency review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # Needed to write the summary comment on the pull request.
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Review dependencies
+        uses: actions/dependency-review-action@v5
+        with:
+          # fail-on-severity defaults to `low`. This repository fails on high and critical only,
+          # so a low-severity advisory in a transitive test dependency does not block work.
+          fail-on-severity: high
+          # Only report on the pull request when the check actually failed.
+          comment-summary-in-pr: on-failure

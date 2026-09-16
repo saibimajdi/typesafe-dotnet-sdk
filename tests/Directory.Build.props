@@ -1,0 +1,37 @@
+<Project>
+
+  <!--
+    A Directory.Build.props stops MSBuild's upward search, so the repository-root file has to be
+    imported explicitly or every test project silently loses the shared compiler settings.
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!--
+    Test projects are not shipped, so packaging metadata and the trimming/AOT analyzers that
+    only matter for published libraries are switched off. The compiler is still treated as a
+    test suite: warnings are errors here too.
+  -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+
+    <!--
+      xUnit's generated code and test naming conventions trip style rules that do not apply to test
+      code. xUnit1051 asks every call that accepts a CancellationToken to pass
+      TestContext.Current.CancellationToken; the unit tests here are hermetic and finish in
+      microseconds because the transport is a stub, so token responsiveness buys nothing, while the
+      integration tests that genuinely wait on the network do pass the token explicitly.
+    -->
+    <NoWarn>$(NoWarn);CA1707;CA1861;CA2007;MA0004;MA0048;CS1591;xUnit1051</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

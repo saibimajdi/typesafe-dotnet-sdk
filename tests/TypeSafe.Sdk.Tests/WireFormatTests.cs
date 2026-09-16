@@ -1,0 +1,319 @@
+using System.Text.Json.Nodes;
+
+using System.Text.Json;
+
+namespace TypeSafe.Tests;
+
+/// <summary>
+/// Verifies that the SDK puts exactly the documented bytes on the wire.
+/// </summary>
+/// <remarks>
+/// The expected values are the request bodies printed in the TypeSafe documentation, so these
+/// tests compare the SDK against the published contract rather than against its own output.
+/// </remarks>
+public sealed class WireFormatTests
+{
+    [Fact]
+    public async Task MinimalNoulRequestMatchesTheDocumentedBody()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            "Help! My payouts have been failing for 3 days.",
+            [new NoulQuestion("is_urgent", "Does this convey urgency?")]);
+
+        AssertJsonEquivalent(Fixtures.MinimalNoulRequest, handler.LastRequest.Body!);
+    }
+
+    [Fact]
+    public async Task NoulRequestWithCriteriaMatchesTheDocumentedBody()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            "Help! My payouts have been failing for 3 days.",
+            [
+                new NoulQuestion(
+                    "is_urgent",
+                    "Does this convey urgency?",
+                    new NoulCriteria(
+                        JsonValue.Create("Explicitly time-sensitive"),
+                        JsonValue.Create("No urgency expressed"))),
+            ]);
+
+        AssertJsonEquivalent(Fixtures.NoulWithCriteriaRequest, handler.LastRequest.Body!);
+    }
+
+    [Fact]
+    public async Task ChoiceRequestMatchesTheDocumentedBody()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.ChoiceResponse);
+
+        await client.SystemOneAsync(
+            "Help! My payouts have been failing for 3 days.",
+            [
+                new ChoiceQuestion(
+                    "department",
+                    "Which team should handle this?",
+                    new Dictionary<string, string?>
+                    {
+                        ["billing"] = "Payments, invoicing, refunds",
+                        ["technical"] = "Bugs, outages, integrations",
+                        ["sales"] = "Pricing, upgrades, new accounts",
+                    }),
+            ]);
+
+        AssertJsonEquivalent(Fixtures.ChoiceRequest, handler.LastRequest.Body!);
+    }
+
+    [Fact]
+    public async Task ScoreRequestMatchesTheDocumentedBody()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.ScoreResponse);
+
+        await client.SystemOneAsync(
+            "Help! My payouts have been failing for 3 days.",
+            [new ScoreQuestion("frustration", "How frustrated is the customer?", ["Calm", "Frustrated", "Very angry"])]);
+
+        AssertJsonEquivalent(Fixtures.ScoreRequest, handler.LastRequest.Body!);
+    }
+
+    [Fact]
+    public async Task StateObjectIsSentAsStructuredJson()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            new JsonObject
+            {
+                ["ticket_message"] = "My flight was cancelled. Can I get a refund?",
+                ["refund_policy"] = "Cancelled flights are eligible for a full refund.",
+            },
+            [new NoulQuestion("refund_requested", "Does `ticket_message` request a refund?")]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var state = body.RootElement.GetProperty("state");
+
+        Assert.Equal(JsonValueKind.Object, state.ValueKind);
+        Assert.Equal(
+            "My flight was cancelled. Can I get a refund?",
+            state.GetProperty("ticket_message").GetString());
+    }
+
+    [Fact]
+    public async Task StructuredInstructionsAreSentVerbatim()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            new JsonObject { ["source_text"] = "Invoice #4471 issued March 3, 2026." },
+            [
+                new NoulQuestion(
+                    "invoice_number_is_correct",
+                    new JsonObject
+                    {
+                        ["field"] = new JsonObject
+                        {
+                            ["name"] = "invoice_number",
+                            ["type"] = "string",
+                        },
+                        ["extracted_value"] = "4471",
+                        ["question"] = "Does `extracted_value` match the `field`?",
+                    }),
+            ]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var instructions = body.RootElement
+            .GetProperty("questions")
+            .GetProperty("invoice_number_is_correct")
+            .GetProperty("instructions");
+
+        // The documented guidance is explicit that the keys inside structured instructions are not
+        // part of the API and none are reserved, so the SDK must not reshape or rename them.
+        Assert.Equal("invoice_number", instructions.GetProperty("field").GetProperty("name").GetString());
+        Assert.Equal("4471", instructions.GetProperty("extracted_value").GetString());
+    }
+
+    [Fact]
+    public async Task NullChoiceDescriptionsArePreserved()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.ChoiceResponse);
+
+        await client.SystemOneAsync(
+            "text",
+            [new ChoiceQuestion("tone", "What is the tone?", ["calm", "angry"])]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var criteria = body.RootElement.GetProperty("questions").GetProperty("tone").GetProperty("criteria");
+
+        // The API reference types choice criteria as map<string, string | null>, and null is a
+        // meaningful value meaning "this option needs no extra detail".
+        Assert.Equal(JsonValueKind.Null, criteria.GetProperty("calm").ValueKind);
+        Assert.Equal(JsonValueKind.Null, criteria.GetProperty("angry").ValueKind);
+    }
+
+    [Fact]
+    public async Task SerializationIsDeterministic()
+    {
+        var (first, firstHandler) = TestClient.Returning(TypeSafe.Tests.TestClient.TriageResponse);
+        var (second, secondHandler) = TestClient.Returning(TypeSafe.Tests.TestClient.TriageResponse);
+
+        await first.SystemOneAsync("state", TestClient.TriageQuestions());
+        await second.SystemOneAsync("state", TestClient.TriageQuestions());
+
+        // Deterministic output is what lets a caller hash, cache, and replay a request body.
+        Assert.Equal(firstHandler.LastRequest.Body, secondHandler.LastRequest.Body);
+    }
+
+    [Fact]
+    public async Task ExtraBodyFieldsAreMergedLastAndCanOverride()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(new SystemOneRequest
+        {
+            State = "text",
+            Model = "jev-latest",
+            Questions = [new NoulQuestion("a", "question?")],
+            AdditionalProperties = new Dictionary<string, JsonNode?>
+            {
+                // The documented escape hatch passes fields the SDK does not model, including an
+                // undocumented server field. Merging is last-write-wins.
+                ["beam_width"] = 4,
+                ["model"] = "jev-1.12",
+            },
+        });
+
+        using var body = handler.LastRequest.ParseBody();
+
+        Assert.Equal(4, body.RootElement.GetProperty("beam_width").GetInt32());
+        Assert.Equal("jev-1.12", body.RootElement.GetProperty("model").GetString());
+
+        // A colliding key must not produce a duplicate JSON property.
+        var modelCount = 0;
+        foreach (var property in body.RootElement.EnumerateObject())
+        {
+            if (property.NameEquals("model"))
+            {
+                modelCount++;
+            }
+        }
+
+        Assert.Equal(1, modelCount);
+    }
+
+    [Fact]
+    public async Task PerCallModelOverridesTheClientDefault()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(new SystemOneRequest
+        {
+            State = "text",
+            Model = "jev-1.12",
+            Questions = [new NoulQuestion("a", "question?")],
+        });
+
+        using var body = handler.LastRequest.ParseBody();
+        Assert.Equal("jev-1.12", body.RootElement.GetProperty("model").GetString());
+    }
+
+    [Fact]
+    public async Task RawQuestionPassesUnmodelledFieldsThrough()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            "text",
+            [
+                new RawQuestion(
+                    "future",
+                    "some_future_kind",
+                    new JsonObject
+                    {
+                        ["instructions"] = "A question kind this SDK does not model.",
+                        ["weight"] = 2,
+                    }),
+            ]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var question = body.RootElement.GetProperty("questions").GetProperty("future");
+
+        Assert.Equal("some_future_kind", question.GetProperty("type").GetString());
+        Assert.Equal(2, question.GetProperty("weight").GetInt32());
+    }
+
+    [Fact]
+    public async Task ExtraQuestionFieldsAreMerged()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        await client.SystemOneAsync(
+            "text",
+            [
+                new NoulQuestion(
+                    "weighted",
+                    "question?",
+                    criteria: null,
+                    additionalProperties: new Dictionary<string, JsonNode?> { ["weight"] = 2 }),
+            ]);
+
+        using var body = handler.LastRequest.ParseBody();
+        Assert.Equal(
+            2,
+            body.RootElement.GetProperty("questions").GetProperty("weighted").GetProperty("weight").GetInt32());
+    }
+
+    [Fact]
+    public async Task QuestionIdsAreSentVerbatimWithoutSanitising()
+    {
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+
+        // Real ids observed in the TypeSafe cookbooks use these characters.
+        string[] ids =
+        [
+            "plot_price.style?",
+            "gate::prose_suffices",
+            "__overall__::judge",
+            "compare_returns.symbols.NVDA",
+            "type_B014",
+        ];
+
+        await client.SystemOneAsync("text", [.. ids.Select(id => new NoulQuestion(id, "question?"))]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var questions = body.RootElement.GetProperty("questions");
+
+        foreach (var id in ids)
+        {
+            Assert.True(questions.TryGetProperty(id, out _), $"Question id '{id}' was not sent verbatim.");
+        }
+    }
+
+    [Fact]
+    public async Task SerializedStateDoesNotUseTheSdkNamingPolicy()
+    {
+        // The SDK applies snake_case to its own envelope, but the state is the caller's data, so a
+        // caller's property names must survive untouched.
+        var state = new { OrderId = "A-104", AmountUsd = 49 };
+
+        var (client, handler) = TestClient.Returning(Fixtures.NoulResponse);
+        await client.SystemOneAsync(state, [new NoulQuestion("a", "question?")]);
+
+        using var body = handler.LastRequest.ParseBody();
+        var sent = body.RootElement.GetProperty("state");
+
+        Assert.True(sent.TryGetProperty("OrderId", out _), "The caller's property name was renamed.");
+        Assert.Equal("A-104", sent.GetProperty("OrderId").GetString());
+    }
+
+    private static void AssertJsonEquivalent(string expected, string actual)
+    {
+        var expectedNode = JsonNode.Parse(expected);
+        var actualNode = JsonNode.Parse(actual);
+
+        Assert.True(
+            JsonNode.DeepEquals(expectedNode, actualNode),
+            $"The request body did not match the documented shape.\nExpected: {expected}\nActual:   {actual}");
+    }
+}

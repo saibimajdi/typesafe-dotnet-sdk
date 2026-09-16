@@ -1,0 +1,84 @@
+name: Feature request
+description: Suggest a capability the SDK does not have yet.
+title: '[Feature]: '
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping shape the SDK. The most useful feature requests start from a task you
+        are trying to accomplish, not from a proposed API — often the API already covers it in a way
+        that is not obvious from the documentation, and if it does not, the call site you wish you
+        could write is the best possible design brief.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues and discussions for this request.
+          required: true
+        - label: I read the relevant page under `docs/` and the forward-compatibility guidance.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and what makes it hard or impossible today?
+      placeholder: |
+        I need to route a ticket to one of forty queues, and I want to reuse the same question
+        definition across three services...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like to be able to write
+      description: |
+        The call site you wish existed. It does not have to compile, and it does not have to be the
+        final design — it just has to show the shape you want.
+      render: csharp
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What you do today (optional)
+      description: |
+        The workaround you are using, if any. If there is none, say so — that is useful signal. If
+        the workaround uses `RawQuestion`, `RawJson`, `AdditionalProperties`, or
+        `AdditionalBodyProperties`, please say which: those exist precisely so a new API feature does
+        not have to wait for an SDK release.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package would this affect?
+      options:
+        - TypeSafe.Sdk
+        - TypeSafe.Sdk.DependencyInjection
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+      description: Other designs or workarounds you rejected, and why.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a pull request for this.
+          required: false

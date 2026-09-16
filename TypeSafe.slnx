@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TypeSafe.Sdk.DependencyInjection/TypeSafe.Sdk.DependencyInjection.csproj" />
+    <Project Path="src/TypeSafe.Sdk/TypeSafe.Sdk.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/TypeSafe.Sdk.Samples/TypeSafe.Sdk.Samples.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TypeSafe.Sdk.Tests/TypeSafe.Sdk.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,67 @@
+# Marks inactive issues and pull requests as stale, and closes them if nothing happens.
+#
+# Deliberately gentle: long grace periods, a wide exemption list, and no automatic closing at all
+# for anything pinned, security-related, or already assigned to a milestone. The point is to keep
+# the tracker readable, not to punish contributors.
+name: Stale
+
+on:
+  schedule:
+    # Once a day, 03:17 UTC.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stale-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  stale:
+    name: mark stale
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Mark and close stale items
+        uses: actions/stale@v11
+        with:
+          # Issues: two months of silence before a nudge, then two more weeks.
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          # Pull requests: a shorter fuse, because an abandoned pull request blocks review work.
+          days-before-pr-stale: 45
+          days-before-pr-close: 21
+
+          stale-issue-label: stale
+          stale-pr-label: stale
+
+          exempt-issue-labels: 'pinned,security,good first issue,help wanted'
+          exempt-pr-labels: 'pinned,security,work in progress'
+          exempt-all-milestones: true
+          exempt-draft-pr: true
+          exempt-all-assignees: false
+
+          # Leave a closed issue closed; do not re-open or re-label history on every run.
+          remove-stale-when-updated: true
+          operations-per-run: 100
+
+          stale-issue-message: >
+            This issue has had no activity for 60 days, so it is being marked as stale. It will
+            close in 14 days if nothing changes. If it is still relevant, add a comment — even
+            just "still relevant" — and the label will be removed. If it is no longer relevant,
+            closing it yourself is welcome and appreciated.
+          close-issue-message: >
+            Closing this as stale after a further 14 days without activity. It can be reopened at
+            any time with a comment, and a fresh issue is equally welcome.
+          stale-pr-message: >
+            This pull request has had no activity for 45 days, so it is being marked as stale. It
+            will close in 21 days if nothing changes. A comment, a rebase, or a note that you are
+            still working on it is enough to keep it open.
+          close-pr-message: >
+            Closing this as stale after a further 21 days without activity. Thank you for the
+            work — reopening or re-submitting against the current `main` is welcome at any time.

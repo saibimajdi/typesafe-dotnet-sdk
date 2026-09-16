@@ -1,0 +1,60 @@
+# OpenSSF Scorecard: supply-chain posture, scored weekly and on every push to main.
+#
+# IMPORTANT — `publish_results: true` imposes hard constraints on this file, and breaking any of
+# them makes the run fail rather than silently degrade:
+#   * no top-level `env:` and no top-level `defaults:` block;
+#   * no write permissions at the workflow level (hence `permissions: read-all` below);
+#   * a GitHub-hosted Ubuntu runner, with no container and no services;
+#   * only allow-listed actions: actions/checkout, actions/upload-artifact,
+#     github/codeql-action/upload-sarif and ossf/scorecard-action itself.
+# Add anything else to this workflow and the results stop being published.
+#
+# Only the default branch and a schedule are supported triggers; `pull_request` and
+# `workflow_dispatch` are experimental, so they are deliberately not used.
+name: Scorecard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Weekly, Monday 05:41 UTC.
+    - cron: '41 5 * * 1'
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: scorecard analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      # Required to upload the SARIF results to code scanning.
+      security-events: write
+      # Required for the OIDC token that lets Scorecard publish results to the public API.
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Scorecard does not need to push anything, so do not leave the token in .git/config.
+          persist-credentials: false
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # Publishes the score to the OpenSSF API so the badge and the viewer work.
+          publish_results: true
+
+      - name: Upload SARIF as an artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif

@@ -1,0 +1,14 @@
+# Funding options shown as a "Sponsor" button on the repository.
+#
+# The GitHub Sponsors line is intentionally left commented out. It is a no-op until the account is
+# actually enrolled in GitHub Sponsors, and an uncommented line for an account that is not enrolled
+# produces a broken button rather than no button. Uncomment it once enrolment is live:
+#
+# github: [JEV]
+
+# Other supported keys, all commented out for the same reason. Only list what you will maintain.
+#
+# open_collective: your-collective
+# ko_fi: your-username
+# tidelift: nuget/TypeSafe.Sdk
+# custom: ["https://example.com/sponsor"]

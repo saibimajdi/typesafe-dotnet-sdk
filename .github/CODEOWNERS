@@ -1,0 +1,28 @@
+# Reviewers are requested automatically for anything that ships.
+#
+# The last matching pattern wins, so the catch-all comes first and the specific rules below it
+# override it. Owners must have write access to the repository for the rule to take effect, and
+# this file only has an effect on pull requests opened after it lands on the default branch.
+
+# Everything, by default.
+*                       @JEV
+
+# Anything that decides what consumers compile against, or what leaves this repository.
+/src/                   @JEV
+/tests/                 @JEV
+/Directory.Build.props  @JEV
+/Directory.Packages.props @JEV
+/global.json            @JEV
+/TypeSafe.slnx          @JEV
+/nuget.config           @JEV
+
+# Source-linked, signed, and published artifacts.
+/src/**/PublicAPI.*.txt @JEV
+/.github/workflows/     @JEV
+/.github/CODEOWNERS     @JEV
+/eng/                   @JEV
+
+# Legal and security documents.
+/LICENSE                @JEV
+/SECURITY.md            @JEV
+/CODE_OF_CONDUCT.md     @JEV

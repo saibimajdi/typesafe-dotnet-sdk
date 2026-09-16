@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+      The tests run against every shipping target framework, so the net8.0 asset is
+      genuinely exercised and not just built.
+    -->
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <RootNamespace>TypeSafe.Tests</RootNamespace>
+    <AssemblyName>TypeSafe.Sdk.Tests</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Disables test parallelization; the suite mutates process-wide environment variables. -->
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TypeSafe.Sdk\TypeSafe.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\TypeSafe.Sdk.DependencyInjection\TypeSafe.Sdk.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

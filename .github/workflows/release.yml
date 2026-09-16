@@ -1,0 +1,240 @@
+# Publishes the packages to NuGet.org and creates the matching GitHub Release.
+#
+# Triggered by pushing a tag such as `v0.1.0`. MinVer derives the package version from that tag,
+# and the `Verify package version` step below fails the run if the produced packages do not carry
+# exactly the tag's version — the tag prefix is the one MinVer setting that fails silently.
+#
+# Publishing uses NuGet Trusted Publishing: no long-lived NuGet API key is stored anywhere. The
+# publish job exchanges a GitHub OIDC token for a temporary API key that is valid for one hour and
+# is scoped by the trusted publishing policy configured on nuget.org. That policy must name:
+#   repository owner  JEV
+#   repository        typesafe-dotnet-sdk
+#   workflow file     release.yml
+#   environment       nuget
+# and `NUGET_USER` must be set to the nuget.org profile name of the policy creator (not an email).
+name: Release
+
+on:
+  push:
+    # `v` followed by a SemVer version, e.g. v0.1.0 or v0.2.0-beta.1.
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+  # Fallback for re-running a release, or for releasing an existing tag that was pushed before
+  # this workflow existed.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to build, publish, and release (for example v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Serialize releases. `cancel-in-progress: false` is deliberate: cancelling a publish halfway can
+# leave the package pushed and the GitHub Release missing, or the reverse.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  CONFIGURATION: Release
+  CI: 'true'
+  ContinuousIntegrationBuild: 'true'
+  TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+
+jobs:
+  pack:
+    name: build, test, and pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Validate the tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "::error::'$TAG' is not a v-prefixed SemVer tag."
+            exit 1
+          fi
+          gh api "repos/${{ github.repository }}/git/ref/tags/$TAG" >/dev/null
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+          # MinVer walks the tag history and SourceLink needs the commit metadata.
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # 10.0.x is the SDK that global.json pins and that builds every project. 8.0.x is here
+          # because the test project multi-targets net8.0;net10.0 and its tests are executed, not
+          # just compiled, so the .NET 8 runtime has to exist. Runtimes that merely happen to be
+          # preinstalled on the runner are not visible once setup-dotnet points DOTNET_ROOT at its
+          # own tool cache.
+          dotnet-version: |
+            10.0.x
+            8.0.x
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore TypeSafe.slnx
+
+      - name: Build
+        run: dotnet build TypeSafe.slnx -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Test
+        run: >
+          dotnet test --solution TypeSafe.slnx
+          -c ${{ env.CONFIGURATION }}
+          --no-build
+          --coverage
+          --results-directory ./TestResults
+
+      - name: Pack
+        run: dotnet pack TypeSafe.slnx -c ${{ env.CONFIGURATION }} --no-build -o artifacts
+
+      - name: Verify packages exist and carry the tag version
+        run: |
+          set -euo pipefail
+          expected="${TAG#v}"
+          echo "Expecting package version $expected"
+
+          # Both packages, in both the .nupkg and the .snupkg form. Asserting the exact file name
+          # also proves MinVer saw the tag: without MinVerTagPrefix=v it would silently produce
+          # 0.1.0-alpha.0.<height> instead, and nothing else in the build would complain.
+          status=0
+          for file in \
+            "TypeSafe.Sdk.$expected.nupkg" \
+            "TypeSafe.Sdk.$expected.snupkg" \
+            "TypeSafe.Sdk.DependencyInjection.$expected.nupkg" \
+            "TypeSafe.Sdk.DependencyInjection.$expected.snupkg"
+          do
+            if [[ -f "artifacts/$file" ]]; then
+              echo "  ok   artifacts/$file"
+            else
+              echo "::error::artifacts/$file was not produced."
+              status=1
+            fi
+          done
+
+          if [[ $status -ne 0 ]]; then
+            echo "Artifacts found:"
+            ls -l artifacts || true
+            exit 1
+          fi
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: packages
+          path: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload test results and coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-test-results
+          path: TestResults/**
+          if-no-files-found: warn
+          retention-days: 7
+
+  publish-nuget:
+    name: publish to nuget.org
+    needs: [pack]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Must match the environment named in the nuget.org trusted publishing policy. Configure it
+    # with required reviewers and a deployment tag rule of `v*` so a publish always needs a human.
+    environment:
+      name: nuget
+      url: https://www.nuget.org/packages/TypeSafe.Sdk
+    permissions:
+      contents: read
+      # Required: lets this job mint the GitHub OIDC token that NuGet validates.
+      id-token: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8
+        with:
+          name: packages
+          path: artifacts
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # Exchanges the OIDC token for a temporary API key. It is valid for one hour, so this runs
+      # immediately before the push and not at the top of the job.
+      - name: NuGet login (OIDC -> temporary API key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          # The nuget.org profile name of the trusted publishing policy's creator, not an email.
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push packages
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          # `--api-key` is passed explicitly rather than relying on the NUGET_API_KEY environment
+          # variable, which needs NuGet 7.6 / SDK 10.0.300 or later to be picked up.
+          dotnet nuget push "artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate \
+            --timeout 900
+
+          # Symbols are pushed separately. If nuget.org already associated the .snupkg that sits
+          # next to the .nupkg, this is a no-op thanks to --skip-duplicate.
+          dotnet nuget push "artifacts/*.snupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate \
+            --timeout 900
+
+  github-release:
+    name: create the GitHub Release
+    needs: [publish-nuget]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # Required to create the Release and attach assets.
+      contents: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8
+        with:
+          name: packages
+          path: artifacts
+
+      # Created after the NuGet push on purpose: a GitHub Release that announces a package which
+      # failed to publish is worse than no Release at all.
+      - name: Create release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.TAG }}
+          name: ${{ env.TAG }}
+          # A tag containing a hyphen is a pre-release, e.g. v0.2.0-beta.1.
+          prerelease: ${{ contains(env.TAG, '-') }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
