@@ -168,6 +168,20 @@ public sealed class TypeSafeClientOptions
         FirstNonBlank(Model, Environment.GetEnvironmentVariable(TypeSafeDefaults.DefaultModelEnvironmentVariable))
         ?? TypeSafeDefaults.DefaultModel;
 
+    internal static bool IsValidTimeout(TimeSpan timeout) =>
+        timeout > TimeSpan.Zero || timeout == System.Threading.Timeout.InfiniteTimeSpan;
+
+    internal static void ValidateTimeout(TimeSpan timeout)
+    {
+        if (!IsValidTimeout(timeout))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(timeout),
+                timeout,
+                "The timeout must be positive, or Timeout.InfiniteTimeSpan to disable it.");
+        }
+    }
+
     private static string? FirstNonBlank(string? first, string? second)
     {
         if (!string.IsNullOrWhiteSpace(first))
