@@ -126,7 +126,7 @@ public sealed class QuestionJsonConverter : JsonConverter<Question>
 
         foreach (var property in element.EnumerateObject())
         {
-            if (property.NameEquals("type") || property.NameEquals("id") || property.NameEquals("instructions"))
+            if (property.NameEquals("type") || property.NameEquals("id"))
             {
                 continue;
             }
