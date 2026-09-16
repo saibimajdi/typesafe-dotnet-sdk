@@ -1,0 +1,81 @@
+site_name: TypeSafe .NET SDK
+site_description: A community .NET client for typed, probability-backed answers from the TypeSafe AI System One API.
+site_url: https://saibimajdi.github.io/typesafe-dotnet-sdk/
+repo_url: https://github.com/saibimajdi/typesafe-dotnet-sdk
+repo_name: saibimajdi/typesafe-dotnet-sdk
+edit_uri: edit/main/docs/
+copyright: Independent, community-maintained SDK. Not affiliated with or endorsed by TypeSafe AI.
+
+theme:
+  name: material
+  language: en
+  # Use system fonts: readers need no third-party font requests.
+  font: false
+  icon:
+    logo: material/code-braces
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+
+nav:
+  - Overview: README.md
+  - Get started:
+      - Quickstart: quickstart.md
+  - Core concepts:
+      - Questions: questions.md
+      - Answers & confidence: answers-and-confidence.md
+  - Build with the SDK:
+      - Composition patterns: patterns.md
+      - Retries & errors: retries-and-errors.md
+      - Forward compatibility: forward-compatibility.md
+  - Resources:
+      - NuGet package: https://www.nuget.org/packages/TypeSafe.Sdk
+      - Changelog: https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md
+      - Support: https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SUPPORT.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/extra.css
+
+# Fail the strict CI build on broken guide links and heading anchors.
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    not_found: warn
+    unrecognized_links: warn
+    anchors: warn

@@ -231,6 +231,10 @@ variables configures every TypeSafe SDK in a polyglot deployment.
 
 ## Documentation
 
+Browse the **[SDK documentation site](https://saibimajdi.github.io/typesafe-dotnet-sdk/)**
+for searchable guides, code examples, and a suggested reading order. The same guides are
+available below as Markdown in this repository.
+
 | Document | What it covers |
 | --- | --- |
 | [docs/README.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/README.md) | Index of every document, and the suggested reading order. |

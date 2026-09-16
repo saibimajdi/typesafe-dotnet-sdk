@@ -222,4 +222,4 @@ var replayed = TypeSafeJson.DeserializeResult(json);
 Record `Model` alongside any decision that has to stay reproducible, and re-run your thresholds
 against the cached result rather than calling the API again. `RequestId` is the handle TypeSafe
 support asks for when investigating a specific request; it is safe to log and safe to paste into an
-issue. See [SECURITY.md](../SECURITY.md) for what is and is not safe to share.
+issue. See [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md) for what is and is not safe to share.

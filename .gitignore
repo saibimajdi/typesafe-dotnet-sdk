@@ -75,3 +75,8 @@ w.yml
 assertion-library-research-2026.md
 dotnet-test-frameworks-2026-09.md
 verify-snapshot-testing-2026-09.md
+
+# Documentation site and local Python environment
+site/
+.venv/
+__pycache__/

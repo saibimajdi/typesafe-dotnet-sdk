@@ -203,7 +203,7 @@ query parameters, or a fragment — it is safe to log and safe to paste into an 
 
 `RequestId` is the value of the `x-typesafe-request-id` header. It is not a credential, it is what
 TypeSafe support asks for when investigating a specific request, and it is safe to share publicly.
-See [SECURITY.md](../SECURITY.md) for the rest of that list.
+See [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md) for the rest of that list.
 
 ### Catching in the right order
 

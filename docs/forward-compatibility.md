@@ -187,6 +187,6 @@ and is therefore not included; persist it separately if you need it later.
 
 The escape hatches exist so nothing is ever blocked, not so that everything stays raw. If you are
 using `RawQuestion` or reading `Answer.AdditionalProperties` for something you rely on regularly,
-that is a good [feature request](../.github/ISSUE_TEMPLATE/feature_request.yml): a modelled type
+that is a good [feature request](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/.github/ISSUE_TEMPLATE/feature_request.yml): a modelled type
 gets XML documentation, compile-time type checking, and a place in the tracked public API surface,
 none of which a raw body can offer.

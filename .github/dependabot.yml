@@ -5,6 +5,23 @@
 # not count against `open-pull-requests-limit`.
 version: 2
 updates:
+  # Documentation build tools are separate from the SDK's NuGet dependencies.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'build(deps)'
+    groups:
+      documentation:
+        patterns: ['*']
+        update-types: [minor, patch]
+    ignore:
+      # Material currently targets MkDocs 1.x; a major migration needs a separate review.
+      - dependency-name: mkdocs
+        update-types: [version-update:semver-major]
+
   # NuGet. Every version in this repository is declared once, in Directory.Packages.props (Central
   # Package Management), which is why `directory: "/"` is enough to see all of them.
   - package-ecosystem: nuget
