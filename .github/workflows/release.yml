@@ -26,6 +26,11 @@ on:
         description: 'Existing tag to build, publish, and release (for example v0.1.0)'
         required: true
         type: string
+      dry-run:
+        description: 'Build, test, pack, and validate only - never contacts nuget.org'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -174,6 +179,12 @@ jobs:
           name: packages
           path: artifacts
 
+      - name: Dry run
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "::notice::Dry run: packages were built and validated but not published."
+          ls -l artifacts
+
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
@@ -182,6 +193,7 @@ jobs:
       # Exchanges the OIDC token for a temporary API key. It is valid for one hour, so this runs
       # immediately before the push and not at the top of the job.
       - name: NuGet login (OIDC -> temporary API key)
+        if: ${{ !inputs.dry-run }}
         id: login
         uses: NuGet/login@v1
         with:
@@ -189,6 +201,7 @@ jobs:
           user: ${{ secrets.NUGET_USER }}
 
       - name: Push packages
+        if: ${{ !inputs.dry-run }}
         env:
           NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
         run: |
@@ -225,9 +238,16 @@ jobs:
           name: packages
           path: artifacts
 
+      - name: Dry run
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "::notice::Dry run: packages were built and validated but not published."
+          ls -l artifacts
+
       # Created after the NuGet push on purpose: a GitHub Release that announces a package which
       # failed to publish is worse than no Release at all.
       - name: Create release
+        if: ${{ !inputs.dry-run }}
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG }}

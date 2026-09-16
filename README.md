@@ -3,7 +3,7 @@
 [![CI](https://github.com/saibimajdi/typesafe-dotnet-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/saibimajdi/typesafe-dotnet-sdk/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/TypeSafe.Sdk.svg)](https://www.nuget.org/packages/TypeSafe.Sdk)
 [![NuGet downloads](https://img.shields.io/nuget/dt/TypeSafe.Sdk.svg)](https://www.nuget.org/packages/TypeSafe.Sdk)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-net8.0%20%7C%20net10.0-512BD4.svg)](#requirements)
 
 Ask typed, answerable questions about any text or JSON state, and get structured,
@@ -13,13 +13,16 @@ define, or a position on a rubric you define.
 This is a community SDK. It is an independent client for the TypeSafe AI System One HTTP API,
 written and maintained by the community.
 
+Links below point at the repository, because NuGet renders this file as a standalone page where
+relative paths do not resolve.
+
 > [!IMPORTANT]
 > **This project is not affiliated with, sponsored by, or endorsed by TypeSafe AI.**
 > It is an independent, community-maintained client library. "TypeSafe" and "System One" are
 > used only to describe the API this library talks to. For the API, the service, the models,
 > and anything about accounts, billing, or uptime, contact TypeSafe AI directly through
 > [typesafe.ai](https://typesafe.ai/) and [console.typesafe.ai](https://console.typesafe.ai/).
-> See [SUPPORT.md](SUPPORT.md) for which venue to use for what.
+> See [SUPPORT.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SUPPORT.md) for which venue to use for what.
 
 ## Why this SDK
 
@@ -32,7 +35,7 @@ written and maintained by the community.
   surfaces it verbatim and never recomputes or substitutes it.
 - **Nothing is lost relative to the raw HTTP API.** Unmodelled response and request fields,
   unknown answer kinds, and new question kinds all survive with
-  [`RawJson`](docs/forward-compatibility.md), `RawQuestion`, and `UnknownAnswer`.
+  [`RawJson`](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/forward-compatibility.md), `RawQuestion`, and `UnknownAnswer`.
 - **Forward compatible by default.** A new answer kind does not fail the response; the other
   answers in the same payload are unaffected.
 - **Trimming- and AOT-clean.** The library is annotated, analyzer-clean, and ships a
@@ -91,7 +94,7 @@ That is the whole loop. `Probability` is a number from `0` to `1`, `Label` is on
 options you supplied, and `Score` is the probability-weighted position along your rubric, so
 it can land between levels.
 
-Continue with [docs/quickstart.md](docs/quickstart.md) for configuration, dependency
+Continue with [docs/quickstart.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/quickstart.md) for configuration, dependency
 injection, structured state, and error handling.
 
 ## At a glance
@@ -123,7 +126,7 @@ state, an arbitrary `TState` with a `JsonTypeInfo<TState>` (trim/AOT-safe), and 
 
 A `NoulQuestion` asks a yes/no question. A `ChoiceQuestion` selects one label from a set of up
 to 255 you supply. A `ScoreQuestion` places the state on an ordered rubric of 2 to 10 levels.
-See [docs/questions.md](docs/questions.md).
+See [docs/questions.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/questions.md).
 
 ### Answers
 
@@ -148,7 +151,7 @@ version does not model.
 | `WeightedScore` | One `ScoreAnswer` plus its relative weight. |
 | `ProbabilityMath` | `NormalizedEntropy`, `ExpectedLevel`, `Variance` for callers who want their own statistic. |
 
-See [docs/patterns.md](docs/patterns.md) for fan-out, confidence-gated routing, composite
+See [docs/patterns.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/patterns.md) for fan-out, confidence-gated routing, composite
 scoring, and intent routing.
 
 ### Configuration and diagnostics
@@ -168,7 +171,7 @@ Every error the SDK raises derives from `TypeSafeException`. Authentication, per
 bad requests, not found, unprocessable entities, rate limits, and server errors derive from
 `TypeSafeApiException` and carry `StatusCode`, `Details`, `RequestId`, `Endpoint`, `Headers`,
 `DocumentationUrl`, and the raw `Body`. See
-[docs/retries-and-errors.md](docs/retries-and-errors.md) for the full table.
+[docs/retries-and-errors.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/retries-and-errors.md) for the full table.
 
 ### Dependency injection
 
@@ -193,7 +196,7 @@ SDK deliberately offers no confidence member rather than inventing one.
 want to compute their own statistic from the full distribution. They are **not** the API's
 confidence, and the SDK never uses them to populate it. Thresholds belong in your code, next
 to the decision they gate. Read
-[docs/answers-and-confidence.md](docs/answers-and-confidence.md) before wiring a threshold
+[docs/answers-and-confidence.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/answers-and-confidence.md) before wiring a threshold
 into production.
 
 ## Requirements
@@ -230,26 +233,26 @@ variables configures every TypeSafe SDK in a polyglot deployment.
 
 | Document | What it covers |
 | --- | --- |
-| [docs/README.md](docs/README.md) | Index of every document, and the suggested reading order. |
-| [docs/quickstart.md](docs/quickstart.md) | Install, configure, first request, DI, structured state, errors. |
-| [docs/questions.md](docs/questions.md) | Noul, choice, and score questions, with their documented limits. |
-| [docs/answers-and-confidence.md](docs/answers-and-confidence.md) | The answer types, confidence semantics, and threshold guidance. |
-| [docs/patterns.md](docs/patterns.md) | Fan-out, confidence-gated routing, composite scoring, intent routing. |
-| [docs/forward-compatibility.md](docs/forward-compatibility.md) | Extra fields, `RawQuestion`, `UnknownAnswer`, `RawJson`. |
-| [docs/retries-and-errors.md](docs/retries-and-errors.md) | Retry knobs and defaults, the exception hierarchy, timeouts and budgets. |
+| [docs/README.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/README.md) | Index of every document, and the suggested reading order. |
+| [docs/quickstart.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/quickstart.md) | Install, configure, first request, DI, structured state, errors. |
+| [docs/questions.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/questions.md) | Noul, choice, and score questions, with their documented limits. |
+| [docs/answers-and-confidence.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/answers-and-confidence.md) | The answer types, confidence semantics, and threshold guidance. |
+| [docs/patterns.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/patterns.md) | Fan-out, confidence-gated routing, composite scoring, intent routing. |
+| [docs/forward-compatibility.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/forward-compatibility.md) | Extra fields, `RawQuestion`, `UnknownAnswer`, `RawJson`. |
+| [docs/retries-and-errors.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/retries-and-errors.md) | Retry knobs and defaults, the exception hierarchy, timeouts and budgets. |
 
 ## Contributing
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the development
+Contributions are welcome. Start with [CONTRIBUTING.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CONTRIBUTING.md) for the development
 setup, the coding standards, and how to add a public API. By taking part you agree to the
-[Code of Conduct](CODE_OF_CONDUCT.md).
+[Code of Conduct](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CODE_OF_CONDUCT.md).
 
 - Bugs and feature requests: [open an issue](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new/choose).
 - Questions and ideas: [start a discussion](https://github.com/saibimajdi/typesafe-dotnet-sdk/discussions).
-- Security reports: **not** in a public issue — follow [SECURITY.md](SECURITY.md).
+- Security reports: **not** in a public issue — follow [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md).
 
-Change history lives in [CHANGELOG.md](CHANGELOG.md).
+Change history lives in [CHANGELOG.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md).
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/LICENSE).
