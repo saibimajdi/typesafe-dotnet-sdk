@@ -159,6 +159,12 @@ jobs:
             exit 1
           fi
 
+      - name: Dry run summary
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "::notice::Dry run: the packages below were built, tested, packed, and validated, but NOT published."
+          ls -l artifacts
+
       - name: Upload packages
         uses: actions/upload-artifact@v7
         with:
@@ -181,6 +187,10 @@ jobs:
   publish-nuget:
     name: publish to nuget.org
     needs: [pack]
+    # Skipped rather than step-skipped: environment protection rules are evaluated before any step
+    # runs, so a dry run dispatched from a branch would be rejected by the nuget environment's v*
+    # tag rule and report a failure for doing exactly what it was asked to do.
+    if: ${{ !inputs.dry-run }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Must match the environment named in the nuget.org trusted publishing policy. Configure it
@@ -198,12 +208,6 @@ jobs:
         with:
           name: packages
           path: artifacts
-
-      - name: Dry run
-        if: ${{ inputs.dry-run }}
-        run: |
-          echo "::notice::Dry run: packages were built and validated but not published."
-          ls -l artifacts
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
@@ -246,6 +250,7 @@ jobs:
   github-release:
     name: create the GitHub Release
     needs: [publish-nuget]
+    if: ${{ !inputs.dry-run }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -257,12 +262,6 @@ jobs:
         with:
           name: packages
           path: artifacts
-
-      - name: Dry run
-        if: ${{ inputs.dry-run }}
-        run: |
-          echo "::notice::Dry run: packages were built and validated but not published."
-          ls -l artifacts
 
       # Created after the NuGet push on purpose: a GitHub Release that announces a package which
       # failed to publish is worse than no Release at all.
