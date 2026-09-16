@@ -145,6 +145,10 @@ public sealed class IntegrationTests
     [Fact]
     public async Task AnInvalidApiKeyIsRejectedWith401()
     {
+        Assert.SkipWhen(
+            string.IsNullOrWhiteSpace(ApiKey),
+            $"Set {TypeSafeDefaults.ApiKeyEnvironmentVariable} to run integration tests.");
+
         using var client = new TypeSafeClient("tsk_definitely_not_a_valid_key", new TypeSafeClientOptions
         {
             Retry = RetryPolicy.None,
