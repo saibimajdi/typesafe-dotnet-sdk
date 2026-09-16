@@ -114,6 +114,60 @@ not used anywhere in this repository; do not add it.
 | `Directory.Packages.props` | Central Package Management: the single source of every package version. |
 | `TypeSafe.slnx` | The solution. It is XML, not the legacy `.sln` format. |
 
+## Documentation website
+
+The [documentation site](https://saibimajdi.github.io/typesafe-dotnet-sdk/) is built with
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from the Markdown files in
+`docs/`. Edit those guides directly; `docs/README.md` becomes the site's home page. Add new
+guides to the navigation in `mkdocs.yml`. Link to other guides using relative `.md` links;
+link to files outside `docs/` using their full GitHub URL so they also work on the site.
+
+Python 3.13 is used in CI. Create a local environment once:
+
+```bash
+python -m venv .venv
+```
+
+Activate it with `source .venv/bin/activate` on macOS/Linux, or
+`.venv\Scripts\Activate.ps1` in PowerShell. Then install and preview:
+
+```bash
+python -m pip install -r requirements-docs.txt
+python -m mkdocs serve
+```
+
+Open the URL printed by MkDocs, normally
+`http://127.0.0.1:8000/typesafe-dotnet-sdk/`. The preview includes the GitHub Pages repository
+prefix so relative links behave as they will in production.
+
+Before pushing, run the same build as the Documentation workflow:
+
+```bash
+python -m mkdocs build --strict
+```
+
+This fails on missing pages, broken internal links, and missing heading anchors. Output goes
+to the ignored `site/` directory. Python tooling is only needed for the website; SDK builds
+and NuGet consumers are unaffected.
+
+### GitHub Pages setup (maintainers)
+
+Once per repository, open **Settings → Pages → Build and deployment** and select
+**GitHub Actions** as the source. Keep the `github-pages` environment restricted to `main`.
+No personal access token or additional repository secret is required.
+
+The [Documentation workflow](.github/workflows/docs.yml) builds every pull request without
+deployment permissions. After a documentation change merges into `main`, it builds and uploads
+the site, then deploys it with GitHub's Pages actions. It can also be run manually on `main`
+from the Actions tab, including after first enabling Pages or to retry a failed deployment.
+Manual runs on other branches only validate the build.
+
+The published address is `https://saibimajdi.github.io/typesafe-dotnet-sdk/`. If the repository
+is renamed, moved, or given a custom domain, update `site_url` in `mkdocs.yml` and the links
+in this guide and the root README. See GitHub's
+[custom workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+for the deployment contract.
+
 ## Working with the `.slnx` solution
 
 The solution file is `TypeSafe.slnx`, the XML solution format that `dotnet new sln` produces by

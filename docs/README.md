@@ -1,25 +1,39 @@
 # TypeSafe .NET SDK documentation
 
-The [README](../README.md) is the front door and the 60-second quickstart. This directory is the
-reference: how each type behaves, what the API guarantees, and how to compose the pieces into
-something that survives contact with production traffic.
+Ask typed questions about text or JSON state. Get probabilities, labels, and scores you can
+use directly in C# — with batching, retries, dependency injection, and forward compatibility.
+
+This community SDK targets **.NET 8 and .NET 10** and supports trimming and Native AOT.
+It is independent of, and not affiliated with or endorsed by, TypeSafe AI.
+
+## Install
+
+```bash
+dotnet add package TypeSafe.Sdk
+```
+
+For `IHttpClientFactory` and `IServiceCollection` integration, also install
+`TypeSafe.Sdk.DependencyInjection`.
+
+**[Start with the quickstart →](quickstart.md)** — create your first request, configure the
+client, and work with typed answers.
 
 ## Start here
 
 | Document | Read it when |
 | --- | --- |
-| [quickstart.md](quickstart.md) | You want a working request in five minutes, then configuration, dependency injection, structured state, and error handling. |
-| [questions.md](questions.md) | You are choosing between a noul, a choice, and a score, or you have hit one of the documented limits. |
-| [answers-and-confidence.md](answers-and-confidence.md) | You are about to put a threshold on an answer, or you are wondering why a noul has no confidence. |
-| [patterns.md](patterns.md) | You want to batch questions, gate an action on confidence, combine several scores, or route by intent. |
-| [forward-compatibility.md](forward-compatibility.md) | The API has a field, a question kind, or an answer kind the SDK does not model. |
-| [retries-and-errors.md](retries-and-errors.md) | A call failed, or you need to reason about timeouts, retries, and budgets before one does. |
+| [Quickstart](quickstart.md) | You want a working request in five minutes, then configuration, dependency injection, structured state, and error handling. |
+| [Questions](questions.md) | You are choosing between a noul, a choice, and a score, or you have hit one of the documented limits. |
+| [Answers and confidence](answers-and-confidence.md) | You are about to put a threshold on an answer, or you are wondering why a noul has no confidence. |
+| [Composition patterns](patterns.md) | You want to batch questions, gate an action on confidence, combine several scores, or route by intent. |
+| [Forward compatibility](forward-compatibility.md) | The API has a field, a question kind, or an answer kind the SDK does not model. |
+| [Retries and errors](retries-and-errors.md) | A call failed, or you need to reason about timeouts, retries, and budgets before one does. |
 
 ## The three ideas worth internalising
 
 **One request, many questions.** Every question in a request sees the same state and is evaluated
 independently and in parallel. Adding a question barely changes latency and costs only its tokens.
-This is what makes the fan-out pattern in [patterns.md](patterns.md) cheaper than the obvious
+This is what makes the fan-out pattern in [Composition patterns](patterns.md) cheaper than the obvious
 alternative of one request per question.
 
 **Answers are typed, and nothing is lost.** Every answer is constrained to the options the question
@@ -31,16 +45,16 @@ reason a new API feature cannot be used.
 **Confidence is reported, not invented.** Where the API reports a confidence, the SDK surfaces it
 verbatim. Where it does not — a noul — there is no confidence member at all, deliberately, rather
 than a value of zero that could be mistaken for a real one. Composing on top, including where to put
-a threshold, is caller code. See [answers-and-confidence.md](answers-and-confidence.md).
+a threshold, is caller code. See [Answers and confidence](answers-and-confidence.md).
 
 ## Other places to look
 
-- [Contributing guide](../CONTRIBUTING.md) — build, test, coding standards, and how to add a public
+- [Contributing guide](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CONTRIBUTING.md) — build, test, coding standards, and how to add a public
   API.
-- [Changelog](../CHANGELOG.md) — what shipped when.
-- [Releasing](../RELEASING.md) — how a version reaches nuget.org, and the one-time trusted
+- [Changelog](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md) — what shipped when.
+- [Releasing](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/RELEASING.md) — how a version reaches nuget.org, and the one-time trusted
   publishing setup behind it.
-- [Support](../SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
+- [Support](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
   service.
 - [TypeSafe's own documentation](https://docs.typesafe.ai/) — the authority on the API itself:
   states, primitives, confidence, and the HTTP contract this SDK implements.

@@ -14,6 +14,9 @@ it can happen by accident.
 
 ### Added
 
+- A searchable SDK documentation site with light/dark themes and automated GitHub Pages
+  deployment, built from the existing Markdown guides and validated on pull requests.
+
 - `TypeSafeClient` and `ITypeSafeClient`: an asynchronous client for the System One API, with five
   `SystemOneAsync` overloads — `SystemOneRequest`, `string` state, `JsonNode?` state, and an
   arbitrary object either with a source-generated `JsonTypeInfo<TState>` for trimming and
