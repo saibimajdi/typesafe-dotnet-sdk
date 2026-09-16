@@ -16,7 +16,7 @@ namespace TypeSafe;
 ///   <item><description>up to <c>25%</c> of each delay removed at random as jitter;</description></item>
 ///   <item><description>retry on <c>408</c>, <c>429</c>, and every <c>5xx</c>;</description></item>
 ///   <item><description>honour <c>Retry-After</c> and <c>retry-after-ms</c> up to <c>60 s</c>;</description></item>
-///   <item><description>a <c>30 s</c> total budget for the whole call, retries and delays included.</description></item>
+///   <item><description>a <c>30 s</c> budget that prevents retries whose delay would reach it.</description></item>
 /// </list>
 /// <para>
 /// Retrying is safe for this API: <c>POST /v1/systemone</c> is a stateless evaluation call, and a
@@ -191,13 +191,13 @@ public sealed class RetryPolicy
     }
 
     /// <summary>
-    /// Gets the total time budget for one SDK call, covering the initial attempt, every retry,
-    /// and every delay between them. <see langword="null"/> removes the limit.
+    /// Gets the elapsed-time budget used to decide whether another retry may start.
+    /// <see langword="null"/> removes the limit.
     /// </summary>
     /// <remarks>
     /// A retry whose delay would reach or exceed the remaining budget is not attempted; the last
-    /// error is rethrown instead. This bounds worst-case latency when the server is asking for
-    /// long <c>Retry-After</c> delays.
+    /// error is rethrown instead. An attempt already in progress is bounded by the per-attempt
+    /// timeout, not by this budget, so total call duration can exceed this value.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
     public TimeSpan? TotalBudget

@@ -84,8 +84,8 @@ public static class TypeSafeDefaults
     /// </summary>
     /// <remarks>
     /// This is the per-attempt timeout. It is distinct from
-    /// <see cref="RetryPolicy.TotalBudget"/>, which bounds the whole call including every retry
-    /// and every delay.
+    /// <see cref="RetryPolicy.TotalBudget"/>, which prevents a retry from starting when its delay
+    /// would reach the retry budget.
     /// </remarks>
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(10);
 

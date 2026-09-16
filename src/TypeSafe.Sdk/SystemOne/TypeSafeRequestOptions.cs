@@ -27,9 +27,8 @@ public sealed class TypeSafeRequestOptions
     /// Gets the timeout applied to each individual attempt, overriding the client timeout.
     /// </summary>
     /// <remarks>
-    /// This bounds one attempt. The whole call is additionally bounded by
-    /// <see cref="RetryPolicy.TotalBudget"/>, which covers every attempt and every delay between
-    /// them.
+    /// This bounds one attempt. <see cref="RetryPolicy.TotalBudget"/> separately controls whether
+    /// another retry may start after a failed attempt.
     /// </remarks>
     public TimeSpan? Timeout { get; init; }
 

@@ -20,7 +20,7 @@ languages.
 | `MaxRetryAfter` | `60 s` | The longest server-requested delay the SDK will honour. A longer one is ignored and the computed backoff is used instead. |
 | `RetryConnectionErrors` | `true` | Whether a `TypeSafeConnectionException` is retried. |
 | `RetryTimeoutErrors` | `true` | Whether a `TypeSafeTimeoutException` is retried. |
-| `TotalBudget` | `30 s` | The budget for the whole call, retries and delays included. `null` removes the limit. |
+| `TotalBudget` | `30 s` | Prevents a retry when its delay would reach the elapsed-time budget. It does not cancel an in-progress attempt. `null` removes the limit. |
 | `ShouldRetry` | `null` | An extra predicate, consulted for every failure. |
 | `OnRetry` | `null` | A callback invoked just before each retry. |
 
@@ -94,8 +94,7 @@ Both the delta-seconds and the HTTP-date forms of `Retry-After` are understood, 
 `retry-after-ms` is checked first when present, matching the sibling SDKs. A server-requested delay
 longer than `MaxRetryAfter` is ignored in favour of the computed backoff, and a retry whose delay
 would reach or exceed the remaining `TotalBudget` is not attempted at all — the last error is
-rethrown instead. That is what bounds worst-case latency when the server keeps asking for long
-delays.
+rethrown instead. This prevents a long server-requested delay from starting another attempt.
 
 ## Per-attempt timeout versus total budget
 
@@ -104,7 +103,12 @@ These are two different limits, and both are needed.
 | Limit | Default | Bounds |
 | --- | --- | --- |
 | `TypeSafeClientOptions.Timeout` (or `TypeSafeRequestOptions.Timeout`) | `10 s` | **One HTTP attempt.** Applied with a linked `CancellationTokenSource`, so each retry gets a fresh full timeout. |
-| `RetryPolicy.TotalBudget` | `30 s` | **The whole call**: the initial attempt, every retry, and every delay between them. |
+| `RetryPolicy.TotalBudget` | `30 s` | **Starting another retry.** Before waiting, the SDK checks elapsed time plus the next delay against this budget. |
+
+`TotalBudget` is a retry-admission budget, not a hard deadline. An HTTP attempt that has already
+started is allowed to run until its per-attempt timeout, so the complete call can finish after the
+budget value. Use the caller's `CancellationToken` when the operation needs a strict end-to-end
+deadline.
 
 An `HttpClient` created by the SDK uses `Timeout.InfiniteTimeSpan`, and the SDK applies the
 per-attempt limit itself. A caller-supplied `HttpClient` is not modified; if it has a shorter timeout,
