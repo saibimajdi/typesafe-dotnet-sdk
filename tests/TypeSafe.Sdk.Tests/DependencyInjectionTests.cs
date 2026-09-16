@@ -59,8 +59,9 @@ public sealed class DependencyInjectionTests
         var handler = new StubHttpMessageHandler(StubHttpMessageHandler.Json(Fixtures.NoulResponse));
         using var provider = Build(handler, WithKey);
 
-        Assert.NotNull(provider.GetRequiredService<ITypeSafeClient>());
-        Assert.NotNull(provider.GetRequiredService<TypeSafeClient>());
+        Assert.Same(
+            provider.GetRequiredService<ITypeSafeClient>(),
+            provider.GetRequiredService<TypeSafeClient>());
     }
 
     [Fact]

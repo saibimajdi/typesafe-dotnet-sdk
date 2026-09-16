@@ -191,8 +191,8 @@ public static class TypeSafeServiceCollectionExtensions
         // logging already masks credential-shaped headers, but the framework's does not.
         builder.RedactLoggedHeaders(static _ => true);
 
-        services.AddSingleton<ITypeSafeClient>(static provider => CreateClient(provider));
         services.AddSingleton(static provider => (TypeSafeClient)CreateClient(provider));
+        services.AddSingleton<ITypeSafeClient>(static provider => provider.GetRequiredService<TypeSafeClient>());
 
         return builder;
     }
