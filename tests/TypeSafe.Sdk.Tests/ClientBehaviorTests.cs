@@ -317,6 +317,20 @@ public sealed class ClientBehaviorTests
     }
 
     [Fact]
+    public void AnInjectedHttpClientsTimeoutIsNotChanged()
+    {
+        var handler = new StubHttpMessageHandler(StubHttpMessageHandler.Json(Fixtures.NoulResponse));
+        using var http = new HttpClient(handler, disposeHandler: false)
+        {
+            Timeout = TimeSpan.FromSeconds(3),
+        };
+
+        using var client = new TypeSafeClient(new TypeSafeClientOptions { ApiKey = TestClient.ApiKey }, http);
+
+        Assert.Equal(TimeSpan.FromSeconds(3), http.Timeout);
+    }
+
+    [Fact]
     public async Task ACallerCancellationSurfacesAsCancellationNotTimeout()
     {
         var handler = new StubHttpMessageHandler(

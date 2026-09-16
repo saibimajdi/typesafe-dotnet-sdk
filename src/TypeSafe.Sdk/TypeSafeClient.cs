@@ -98,9 +98,12 @@ public sealed class TypeSafeClient : ITypeSafeClient, IDisposable
         });
 
         // A per-attempt timeout is applied with a linked CancellationTokenSource so that retries
-        // are bounded individually. HttpClient's own Timeout would bound the whole exchange
-        // including redirects and would surface as a bare TaskCanceledException.
-        client.Timeout = Timeout.InfiniteTimeSpan;
+        // are bounded individually. Disable HttpClient's overlapping timeout only on a client the
+        // SDK owns. A supplied client's settings belong to its caller and are left unchanged.
+        if (ownsClient)
+        {
+            client.Timeout = Timeout.InfiniteTimeSpan;
+        }
 
         _transport = new TypeSafeTransport(client, ownsClient, _options, resolvedKey);
         _models = new ModelsResource(_transport, Combine(baseUrl, "v1/models"));

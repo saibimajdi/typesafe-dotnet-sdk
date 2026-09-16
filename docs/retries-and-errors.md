@@ -106,9 +106,10 @@ These are two different limits, and both are needed.
 | `TypeSafeClientOptions.Timeout` (or `TypeSafeRequestOptions.Timeout`) | `10 s` | **One HTTP attempt.** Applied with a linked `CancellationTokenSource`, so each retry gets a fresh full timeout. |
 | `RetryPolicy.TotalBudget` | `30 s` | **The whole call**: the initial attempt, every retry, and every delay between them. |
 
-The client sets `HttpClient.Timeout` to `Timeout.InfiniteTimeSpan` and applies the per-attempt limit
-itself, so a timeout surfaces as a `TypeSafeTimeoutException` with the timeout that was in effect
-rather than as a bare `TaskCanceledException`.
+An `HttpClient` created by the SDK uses `Timeout.InfiniteTimeSpan`, and the SDK applies the
+per-attempt limit itself. A caller-supplied `HttpClient` is not modified; if it has a shorter timeout,
+that timeout can end an attempt before the SDK's configured limit. In either case the SDK surfaces a
+`TypeSafeTimeoutException` rather than a bare `TaskCanceledException`.
 
 The caller's `CancellationToken` cancels the entire call, including any pending retry. A cancelled
 token surfaces as `OperationCanceledException`, deliberately distinct from `TypeSafeTimeoutException`
