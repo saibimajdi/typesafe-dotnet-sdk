@@ -50,7 +50,7 @@ public sealed class TypeSafeClientOptions
     /// </summary>
     /// <remarks>
     /// Defaults to ten seconds, matching the Python and JavaScript SDKs. This bounds one attempt;
-    /// <see cref="RetryPolicy.TotalBudget"/> separately bounds the whole call.
+    /// <see cref="RetryPolicy.TotalBudget"/> separately controls whether another retry may start.
     /// </remarks>
     public TimeSpan Timeout { get; set; } = TypeSafeDefaults.DefaultTimeout;
 
