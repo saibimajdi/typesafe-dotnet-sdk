@@ -331,6 +331,27 @@ public sealed class ResponseParsingTests
     }
 
     [Fact]
+    public void RawQuestionsKeepInstructionsWhenRoundTrippedThroughJson()
+    {
+        Question original = new RawQuestion(
+            "future",
+            "ranking",
+            new JsonObject
+            {
+                ["instructions"] = new JsonObject { ["question"] = "Rank these values." },
+                ["criteria"] = new JsonArray("a", "b"),
+            });
+
+        var restored = Assert.IsType<RawQuestion>(
+            Serialization.TypeSafeJson.DeserializeQuestion(Serialization.TypeSafeJson.Serialize(original)));
+
+        Assert.Equal(
+            "Rank these values.",
+            restored.Body["instructions"]!["question"]!.GetValue<string>());
+        Assert.Equal(2, restored.Body["criteria"]!.AsArray().Count);
+    }
+
+    [Fact]
     public async Task AResponseWithoutAnAnswersMapIsRejected()
     {
         var (client, _) = TestClient.Returning("""{"model":"jev-latest","usage":{}}""");
