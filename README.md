@@ -252,6 +252,8 @@ setup, the coding standards, and how to add a public API. By taking part you agr
 - Security reports: **not** in a public issue — follow [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md).
 
 Change history lives in [CHANGELOG.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md).
+Maintainers cutting a release should follow
+[RELEASING.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/RELEASING.md).
 
 ## Licence
 

@@ -38,6 +38,8 @@ a threshold, is caller code. See [answers-and-confidence.md](answers-and-confide
 - [Contributing guide](../CONTRIBUTING.md) — build, test, coding standards, and how to add a public
   API.
 - [Changelog](../CHANGELOG.md) — what shipped when.
+- [Releasing](../RELEASING.md) — how a version reaches nuget.org, and the one-time trusted
+  publishing setup behind it.
 - [Support](../SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
   service.
 - [TypeSafe's own documentation](https://docs.typesafe.ai/) — the authority on the API itself:
