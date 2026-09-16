@@ -65,15 +65,35 @@ jobs:
             echo "::error::'$TAG' is not a v-prefixed SemVer tag."
             exit 1
           fi
-          gh api "repos/${{ github.repository }}/git/ref/tags/$TAG" >/dev/null
+
+          # A real release must name a tag that already exists, so the published version is
+          # traceable to a reviewed commit. A dry run is a rehearsal for a tag that does not exist
+          # yet - pushing the tag would trigger this workflow for real - so it creates the tag
+          # locally further down instead of requiring one here.
+          if [[ "${{ inputs.dry-run }}" == "true" ]]; then
+            echo "Dry run: skipping the remote tag check for $TAG."
+          else
+            gh api "repos/${{ github.repository }}/git/ref/tags/$TAG" >/dev/null
+          fi
 
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: ${{ env.TAG }}
+          # A dry run rehearses a tag that does not exist yet, so it builds the dispatched ref.
+          ref: ${{ inputs.dry-run && github.ref || env.TAG }}
           # MinVer walks the tag history and SourceLink needs the commit metadata.
           fetch-depth: 0
           filter: tree:0
+
+      - name: Create the release tag locally
+        if: ${{ inputs.dry-run }}
+        run: |
+          set -euo pipefail
+          # Created but never pushed. MinVer reads local tags, so this is precisely what lets the
+          # dry run prove that the intended tag produces the intended package version - the check
+          # that catches a MinVerTagPrefix mistake.
+          git tag "$TAG"
+          git describe --tags --exact-match
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
