@@ -5,24 +5,24 @@
 # this file only has an effect on pull requests opened after it lands on the default branch.
 
 # Everything, by default.
-*                       @JEV
+*                       @saibimajdi
 
 # Anything that decides what consumers compile against, or what leaves this repository.
-/src/                   @JEV
-/tests/                 @JEV
-/Directory.Build.props  @JEV
-/Directory.Packages.props @JEV
-/global.json            @JEV
-/TypeSafe.slnx          @JEV
-/nuget.config           @JEV
+/src/                   @saibimajdi
+/tests/                 @saibimajdi
+/Directory.Build.props  @saibimajdi
+/Directory.Packages.props @saibimajdi
+/global.json            @saibimajdi
+/TypeSafe.slnx          @saibimajdi
+/nuget.config           @saibimajdi
 
 # Source-linked, signed, and published artifacts.
-/src/**/PublicAPI.*.txt @JEV
-/.github/workflows/     @JEV
-/.github/CODEOWNERS     @JEV
-/eng/                   @JEV
+/src/**/PublicAPI.*.txt @saibimajdi
+/.github/workflows/     @saibimajdi
+/.github/CODEOWNERS     @saibimajdi
+/eng/                   @saibimajdi
 
 # Legal and security documents.
-/LICENSE                @JEV
-/SECURITY.md            @JEV
-/CODE_OF_CONDUCT.md     @JEV
+/LICENSE                @saibimajdi
+/SECURITY.md            @saibimajdi
+/CODE_OF_CONDUCT.md     @saibimajdi

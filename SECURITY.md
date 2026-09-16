@@ -29,7 +29,7 @@ is the supported version.
 ## Reporting a vulnerability
 
 **Report privately through
-[GitHub Security Advisories](https://github.com/JEV/typesafe-dotnet-sdk/security/advisories/new).**
+[GitHub Security Advisories](https://github.com/saibimajdi/typesafe-dotnet-sdk/security/advisories/new).**
 That opens a private thread visible only to you and the maintainers, and it is the fastest
 route to a fix.
 

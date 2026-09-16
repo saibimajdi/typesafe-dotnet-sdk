@@ -7,7 +7,7 @@
 # Publishing uses NuGet Trusted Publishing: no long-lived NuGet API key is stored anywhere. The
 # publish job exchanges a GitHub OIDC token for a temporary API key that is valid for one hour and
 # is scoped by the trusted publishing policy configured on nuget.org. That policy must name:
-#   repository owner  JEV
+#   repository owner  saibimajdi
 #   repository        typesafe-dotnet-sdk
 #   workflow file     release.yml
 #   environment       nuget

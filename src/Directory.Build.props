@@ -15,13 +15,13 @@
     <IsPackable>true</IsPackable>
 
     <Product>TypeSafe SDK for .NET</Product>
-    <Authors>JEV and contributors</Authors>
-    <Company>JEV</Company>
-    <Copyright>Copyright (c) 2026 JEV and contributors</Copyright>
+    <Authors>Majdi Saibi and contributors</Authors>
+    <Company>Majdi Saibi</Company>
+    <Copyright>Copyright (c) 2026 Majdi Saibi and contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/JEV/typesafe-dotnet-sdk</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/JEV/typesafe-dotnet-sdk</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/saibimajdi/typesafe-dotnet-sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/saibimajdi/typesafe-dotnet-sdk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>typesafe;ai;systemone;jev;classification;confidence;llm;sdk;client</PackageTags>

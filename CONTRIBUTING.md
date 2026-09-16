@@ -56,7 +56,7 @@ that would silently run the `net8.0` assembly on the .NET 10 runtime in CI too, 
 ## Getting started
 
 ```bash
-git clone https://github.com/JEV/typesafe-dotnet-sdk.git
+git clone https://github.com/saibimajdi/typesafe-dotnet-sdk.git
 cd typesafe-dotnet-sdk
 dotnet build TypeSafe.slnx
 ```
@@ -301,7 +301,7 @@ need to.
 ## Getting help
 
 - General questions and design discussion:
-  [GitHub Discussions](https://github.com/JEV/typesafe-dotnet-sdk/discussions).
+  [GitHub Discussions](https://github.com/saibimajdi/typesafe-dotnet-sdk/discussions).
 - Bugs and feature requests:
-  [GitHub Issues](https://github.com/JEV/typesafe-dotnet-sdk/issues/new/choose).
+  [GitHub Issues](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new/choose).
 - Anything about the TypeSafe API, service, accounts, or billing: see [SUPPORT.md](SUPPORT.md).

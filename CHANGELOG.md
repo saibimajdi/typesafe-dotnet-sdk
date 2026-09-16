@@ -68,5 +68,5 @@ it can happen by accident.
 - Documentation: a quickstart, a guide to the question types and their documented limits, the
   confidence rules, composition patterns, forward compatibility, and retries and errors.
 
-[Unreleased]: https://github.com/JEV/typesafe-dotnet-sdk/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/JEV/typesafe-dotnet-sdk/releases/tag/v0.1.0
+[Unreleased]: https://github.com/saibimajdi/typesafe-dotnet-sdk/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/saibimajdi/typesafe-dotnet-sdk/releases/tag/v0.1.0

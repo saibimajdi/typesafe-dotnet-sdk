@@ -59,8 +59,19 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-<conduct@example.com>.
+reported privately to the maintainer through GitHub, which keeps the report out
+of public view:
+
+- **Preferred:** open a
+  [private security advisory](https://github.com/saibimajdi/typesafe-dotnet-sdk/security/advisories/new)
+  on this repository and describe the incident. Despite the name, the form accepts
+  any report that needs to stay private, and only the maintainer can see it.
+- **Alternative:** contact [@saibimajdi](https://github.com/saibimajdi) directly
+  through GitHub.
+
+Please do not open a public issue to report a Code of Conduct incident, and do not
+include details of the incident in a public Discussion.
+
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

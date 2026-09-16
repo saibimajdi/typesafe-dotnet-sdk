@@ -1,6 +1,6 @@
 # TypeSafe .NET SDK
 
-[![CI](https://github.com/JEV/typesafe-dotnet-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/JEV/typesafe-dotnet-sdk/actions/workflows/ci.yml)
+[![CI](https://github.com/saibimajdi/typesafe-dotnet-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/saibimajdi/typesafe-dotnet-sdk/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/TypeSafe.Sdk.svg)](https://www.nuget.org/packages/TypeSafe.Sdk)
 [![NuGet downloads](https://img.shields.io/nuget/dt/TypeSafe.Sdk.svg)](https://www.nuget.org/packages/TypeSafe.Sdk)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -244,8 +244,8 @@ Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the
 setup, the coding standards, and how to add a public API. By taking part you agree to the
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
-- Bugs and feature requests: [open an issue](https://github.com/JEV/typesafe-dotnet-sdk/issues/new/choose).
-- Questions and ideas: [start a discussion](https://github.com/JEV/typesafe-dotnet-sdk/discussions).
+- Bugs and feature requests: [open an issue](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new/choose).
+- Questions and ideas: [start a discussion](https://github.com/saibimajdi/typesafe-dotnet-sdk/discussions).
 - Security reports: **not** in a public issue — follow [SECURITY.md](SECURITY.md).
 
 Change history lives in [CHANGELOG.md](CHANGELOG.md).
