@@ -125,24 +125,64 @@ jobs:
     name: secret scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      # Needed to publish findings to the repository's Security tab.
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          # A full history is required: the scan covers every commit the ref exposes, not just
-          # the tip.
+          # A full history is required: the scan covers every commit, not just the tip, so a key
+          # that was committed and later removed is still caught.
           fetch-depth: 0
 
       # An SDK that reads API keys should not be the thing that leaks one. GitHub's own secret
-      # scanning covers public repositories, but this also catches a key that was committed and
-      # then removed, and it runs before review rather than after.
+      # scanning covers public repositories, but it only looks at the tip, and this runs before
+      # review rather than after.
+      #
+      # The gitleaks CLI is invoked directly rather than through gitleaks/gitleaks-action. The
+      # action derives its scan range from the event as `<pushed-range-start>^..<head>`, and the
+      # `^` is invalid when that range starts at the repository's root commit - which is exactly
+      # what the first push to an empty repository looks like. It then fails with "ambiguous
+      # argument" and reports no leaks, so it fails open on the one push where it matters most.
+      # The action also validates its licence against a third-party service; the CLI does not, and
+      # gitleaks itself is MIT.
       - name: Scan for secrets
-        uses: gitleaks/gitleaks-action@v3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Only required for organization-owned repositories. Leave the secret unset for a
-          # personal repository.
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          # Bump deliberately. Pinning keeps a new upstream release from changing what this gate
+          # reports without a commit here.
+          GITLEAKS_VERSION: '8.24.3'
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ runner.os }}" != "Linux" ]]; then
+            echo "::error::This step is written for the Linux runner."
+            exit 1
+          fi
+
+          url="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL "$url" | tar -xz -C "$RUNNER_TEMP" gitleaks
+
+          # --log-opts=--all rather than a computed range, so the scan is the same on every event
+          # and cannot be defeated by an unusual range. --redact keeps a detected secret out of the
+          # log, and --exit-code 2 fails the step when something is found.
+          "$RUNNER_TEMP/gitleaks" detect \
+            --source . \
+            --log-opts="--all" \
+            --redact \
+            --report-format sarif \
+            --report-path gitleaks-results.sarif \
+            --exit-code 2
+
+      # Runs even when the scan above failed, so a real finding lands in the Security tab instead
+      # of only in the job log.
+      - name: Upload findings
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: gitleaks-results.sarif
+          category: gitleaks
 
   markdownlint:
     name: markdownlint
