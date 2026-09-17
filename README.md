@@ -239,6 +239,7 @@ available below as Markdown in this repository.
 | --- | --- |
 | [docs/README.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/README.md) | Index of every document, and the suggested reading order. |
 | [docs/quickstart.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/quickstart.md) | Install, configure, first request, DI, structured state, errors. |
+| [docs/api-reference.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/api-reference.md) | Curated public signatures, options, results, retries, DI, and the verified wire contract. |
 | [docs/questions.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/questions.md) | Noul, choice, and score questions, with their documented limits. |
 | [docs/answers-and-confidence.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/answers-and-confidence.md) | The answer types, confidence semantics, and threshold guidance. |
 | [docs/patterns.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/docs/patterns.md) | Fan-out, confidence-gated routing, composite scoring, intent routing. |

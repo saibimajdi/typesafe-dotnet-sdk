@@ -23,6 +23,7 @@ client, and work with typed answers.
 | Document | Read it when |
 | --- | --- |
 | [Quickstart](quickstart.md) | You want a working request in five minutes, then configuration, dependency injection, structured state, and error handling. |
+| [API reference](api-reference.md) | You need the authoritative public signatures, option precedence, result members, retry defaults, or HTTP wire shape. |
 | [Questions](questions.md) | You are choosing between a noul, a choice, and a score, or you have hit one of the documented limits. |
 | [Answers and confidence](answers-and-confidence.md) | You are about to put a threshold on an answer, or you are wondering why a noul has no confidence. |
 | [Composition patterns](patterns.md) | You want to batch questions, gate an action on confidence, combine several scores, or route by intent. |
