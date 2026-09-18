@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// An ordered, duplicate-rejecting collection of <see cref="Question"/> objects.

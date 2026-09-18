@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A question that selects one option from a set the caller defines.

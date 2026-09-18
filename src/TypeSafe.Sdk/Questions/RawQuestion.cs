@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A question sent exactly as supplied, for API features this SDK version does not model.

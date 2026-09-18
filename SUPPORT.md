@@ -11,9 +11,9 @@ requires reproducing your application does not.
 
 | What you have | Where it goes |
 | --- | --- |
-| A question about how to use the SDK, or a design question | [GitHub Discussions](https://github.com/saibimajdi/typesafe-dotnet-sdk/discussions) |
-| A bug in the SDK, with a reproduction | [Bug report](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new?template=bug_report.yml) |
-| An idea for a capability the SDK lacks | [Feature request](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new?template=feature_request.yml), or a Discussion first if the shape is unclear |
+| A question about how to use the SDK, or a design question | [GitHub Discussions](https://github.com/saibimajdi/typesafeai-dotnet-sdk/discussions) |
+| A bug in the SDK, with a reproduction | [Bug report](https://github.com/saibimajdi/typesafeai-dotnet-sdk/issues/new?template=bug_report.yml) |
+| An idea for a capability the SDK lacks | [Feature request](https://github.com/saibimajdi/typesafeai-dotnet-sdk/issues/new?template=feature_request.yml), or a Discussion first if the shape is unclear |
 | A security vulnerability | **Privately**, per [SECURITY.md](SECURITY.md) — never a public issue |
 | A vulnerability in a third-party dependency | The upstream project; Dependabot and the dependency review check will surface it here too |
 | A problem with the TypeSafe API, the models, your account, quotas, or billing | **TypeSafe AI**, through [typesafe.ai](https://typesafe.ai/) and the [console](https://console.typesafe.ai/) |

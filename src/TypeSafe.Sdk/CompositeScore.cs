@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Combines several <see cref="ScoreAnswer"/> values into one weighted judgment.

@@ -2,8 +2,8 @@
 
 ## Scope
 
-This policy covers the code in this repository: the `TypeSafe.Sdk` and
-`TypeSafe.Sdk.DependencyInjection` packages, the build and release workflows that publish them,
+This policy covers the code in this repository: the `TypeSafeAI.Sdk` and
+`TypeSafeAI.Sdk.DependencyInjection` packages, the build and release workflows that publish them,
 and the documentation in `docs/`.
 
 It does **not** cover the TypeSafe AI service or API. This is an independent, community
@@ -29,7 +29,7 @@ is the supported version.
 ## Reporting a vulnerability
 
 **Report privately through
-[GitHub Security Advisories](https://github.com/saibimajdi/typesafe-dotnet-sdk/security/advisories/new).**
+[GitHub Security Advisories](https://github.com/saibimajdi/typesafeai-dotnet-sdk/security/advisories/new).**
 That opens a private thread visible only to you and the maintainers, and it is the fastest
 route to a fix.
 

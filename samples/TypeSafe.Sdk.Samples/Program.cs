@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe.Samples;
+namespace TypeSafeAI.Samples;
 
 /// <summary>
 /// Runnable examples of the patterns the TypeSafe documentation describes.

@@ -8,7 +8,7 @@
 # publish job exchanges a GitHub OIDC token for a temporary API key that is valid for one hour and
 # is scoped by the trusted publishing policy configured on nuget.org. That policy must name:
 #   repository owner  saibimajdi
-#   repository        typesafe-dotnet-sdk
+#   repository        typesafeai-dotnet-sdk
 #   workflow file     release.yml
 #   environment       nuget
 # and `NUGET_USER` must be set to the nuget.org profile name of the policy creator (not an email).
@@ -77,7 +77,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
           # A dry run rehearses a tag that does not exist yet, so it builds the dispatched ref.
           ref: ${{ inputs.dry-run && github.ref || env.TAG }}
@@ -96,7 +96,7 @@ jobs:
           git describe --tags --exact-match
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
         with:
           # 10.0.x is the SDK that global.json pins and that builds every project. 8.0.x is here
           # because the test project multi-targets net8.0;net10.0 and its tests are executed, not
@@ -106,10 +106,13 @@ jobs:
           dotnet-version: |
             10.0.x
             8.0.x
+          # Keyed on the lock files, which pin the whole transitive graph. A release must restore
+          # exactly what CI restored and reviewed, and RestoreLockedMode enforces that the lock
+          # files still describe it.
           cache: true
           cache-dependency-path: |
             Directory.Packages.props
-            **/*.csproj
+            **/packages.lock.json
 
       - name: Restore
         run: dotnet restore TypeSafe.slnx
@@ -140,10 +143,10 @@ jobs:
           # 0.1.0-alpha.0.<height> instead, and nothing else in the build would complain.
           status=0
           for file in \
-            "TypeSafe.Sdk.$expected.nupkg" \
-            "TypeSafe.Sdk.$expected.snupkg" \
-            "TypeSafe.Sdk.DependencyInjection.$expected.nupkg" \
-            "TypeSafe.Sdk.DependencyInjection.$expected.snupkg"
+            "TypeSafeAI.Sdk.$expected.nupkg" \
+            "TypeSafeAI.Sdk.$expected.snupkg" \
+            "TypeSafeAI.Sdk.DependencyInjection.$expected.nupkg" \
+            "TypeSafeAI.Sdk.DependencyInjection.$expected.snupkg"
           do
             if [[ -f "artifacts/$file" ]]; then
               echo "  ok   artifacts/$file"
@@ -166,7 +169,7 @@ jobs:
           ls -l artifacts
 
       - name: Upload packages
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
         with:
           name: packages
           path: |
@@ -177,12 +180,157 @@ jobs:
 
       - name: Upload test results and coverage
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
         with:
           name: release-test-results
           path: TestResults/**
           if-no-files-found: warn
           retention-days: 7
+
+  # A rehearsal exists because `pack` proves the packages are correct but not that anything can
+  # publish them: it never contacts a feed. These two jobs close that gap, and both run only on a
+  # dry run, so a tag push never rehearses anything.
+  publish-rehearsal:
+    name: rehearse the push (GitHub Packages)
+    needs: [pack]
+    if: ${{ inputs.dry-run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      # Required to push to this repository's GitHub Packages feed.
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          # The restore smoke test reads the checked-in NuGet configuration below.
+          persist-credentials: false
+
+      - name: Download packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          name: packages
+          path: artifacts
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
+        with:
+          dotnet-version: 10.0.x
+
+      # GitHub Packages is the rehearsal feed: it is a real NuGet v3 feed with the rules that matter
+      # here (an API key, immutable versions, `--skip-duplicate` semantics), and it needs no secret
+      # beyond the workflow token. nuget.org stays the only channel consumers are told to use.
+      #
+      # The rehearsal publishes under the real package IDs on purpose: a rehearsed package with a
+      # different ID would exercise a different nuspec and a different dependency graph than the
+      # one that ships.
+      #
+      # Only the .nupkg files are pushed. The rehearsal is about the push mechanics and the feed
+      # accepting the package; the .snupkg files have already been produced and checked by the pack
+      # job, and nuget.org is where symbol validation happens.
+      - name: Push to GitHub Packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          dotnet nuget push "artifacts/*.nupkg" \
+            --api-key "$GH_TOKEN" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --skip-duplicate \
+            --timeout 900
+
+      # A push that reports success but leaves a package nobody can restore is the failure this
+      # step is for, so the feed is used the way a consumer would use it rather than asked whether
+      # it is happy. Re-running a rehearsal restores the version that is already there, which
+      # `--skip-duplicate` made a no-op - the check is the same either way.
+      #
+      # The checked-in config holds no secret. Following GitHub's documented Actions setup, this
+      # step adds the short-lived token to a disposable copy and deletes it when the step exits.
+      - name: Restore both packages from the rehearsal feed
+        env:
+          # Do not call this VERSION: MSBuild imports environment variables as project properties,
+          # and the v-prefixed release tag is not a valid NuGet project version.
+          RELEASE_TAG: ${{ env.TAG }}
+          GH_TOKEN: ${{ github.token }}
+          # A directory of its own, so nothing here can be satisfied from the CI package cache.
+          NUGET_PACKAGES: ${{ runner.temp }}/rehearsal-packages
+        run: |
+          set -euo pipefail
+          package_version="${RELEASE_TAG#v}"
+          scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
+          config="$scratch/nuget.config"
+
+          cp "$GITHUB_WORKSPACE/.github/nuget.rehearsal.config" "$config"
+          dotnet nuget update source github \
+            --username "$GITHUB_ACTOR" \
+            --password "$GH_TOKEN" \
+            --store-password-in-clear-text \
+            --configfile "$config"
+
+          dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
+          for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
+            dotnet add "$scratch/smoke" package "$package" \
+              --version "$package_version" \
+              --no-restore
+          done
+
+          dotnet restore "$scratch/smoke" \
+            --configfile "$config"
+          dotnet build "$scratch/smoke" -c Release --no-restore
+
+          echo "::notice::Both packages restore from the rehearsal feed at version $package_version."
+
+      - name: Rehearsal summary
+        run: |
+          echo "::notice::Rehearsal: the packages were pushed to this repository's GitHub Packages feed. nuget.org was not contacted."
+
+  # The trusted publishing handshake is the one part of a release that cannot be rehearsed on a
+  # branch: the nuget environment is tag-restricted, and the policy on nuget.org names that
+  # environment, so a rehearsal dispatched from a branch would be testing a different thing.
+  # Dispatch from an existing `v*` tag to rehearse it:
+  #
+  #   gh workflow run release.yml --ref v0.1.0 -f tag=v0.2.0 -f dry-run=true
+  #
+  # Nothing is pushed: the key is only proved to exist, so a wrong NUGET_USER, a policy that names
+  # the wrong workflow file, or a renamed environment is a failure here instead of a failure
+  # halfway through a real release.
+  oidc-rehearsal:
+    name: rehearse the OIDC handshake (nuget.org)
+    needs: [pack]
+    if: ${{ inputs.dry-run && github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: nuget
+      url: https://www.nuget.org/packages/TypeSafeAI.Sdk
+    permissions:
+      contents: read
+      # Required: lets this job mint the GitHub OIDC token that NuGet validates.
+      id-token: write
+    steps:
+      - name: NuGet login (OIDC -> temporary API key)
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841  # v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Confirm the handshake returned a key
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${NUGET_API_KEY:-}" ]]; then
+            echo "::error::nuget.org accepted the OIDC token but returned no API key."
+            exit 1
+          fi
+
+          # The key is a credential even though it was never used, so keep it out of the log.
+          echo "::add-mask::$NUGET_API_KEY"
+          echo "::notice::Trusted publishing handshake succeeded. The key was not used to push anything and expires within the hour."
 
   publish-nuget:
     name: publish to nuget.org
@@ -197,20 +345,20 @@ jobs:
     # with required reviewers and a deployment tag rule of `v*` so a publish always needs a human.
     environment:
       name: nuget
-      url: https://www.nuget.org/packages/TypeSafe.Sdk
+      url: https://www.nuget.org/packages/TypeSafeAI.Sdk
     permissions:
       contents: read
       # Required: lets this job mint the GitHub OIDC token that NuGet validates.
       id-token: write
     steps:
       - name: Download packages
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
           name: packages
           path: artifacts
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
         with:
           dotnet-version: 10.0.x
 
@@ -219,7 +367,7 @@ jobs:
       - name: NuGet login (OIDC -> temporary API key)
         if: ${{ !inputs.dry-run }}
         id: login
-        uses: NuGet/login@v1
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841  # v1
         with:
           # The nuget.org profile name of the trusted publishing policy's creator, not an email.
           user: ${{ secrets.NUGET_USER }}
@@ -258,7 +406,7 @@ jobs:
       contents: write
     steps:
       - name: Download packages
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
           name: packages
           path: artifacts
@@ -267,7 +415,7 @@ jobs:
       # failed to publish is worse than no Release at all.
       - name: Create release
         if: ${{ !inputs.dry-run }}
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64  # v3
         with:
           tag_name: ${{ env.TAG }}
           name: ${{ env.TAG }}
@@ -278,3 +426,116 @@ jobs:
           files: |
             artifacts/*.nupkg
             artifacts/*.snupkg
+
+      # The action above reports what it uploaded; this asks GitHub what the Release actually
+      # carries, by name and by size. A Release is the page a reader lands on, so an empty asset
+      # list is a broken announcement even when the packages did reach nuget.org.
+      - name: Confirm the Release carries the packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ env.TAG }}
+        run: |
+          set -euo pipefail
+          package_version="${VERSION#v}"
+
+          # name<TAB>size, so a zero-byte asset is caught as well as a missing one.
+          assets="$(
+            gh api "repos/${{ github.repository }}/releases/tags/$VERSION" \
+              --jq '.assets[] | "\(.name)\t\(.size)"'
+          )"
+
+          status=0
+          for file in \
+            "TypeSafeAI.Sdk.$package_version.nupkg" \
+            "TypeSafeAI.Sdk.$package_version.snupkg" \
+            "TypeSafeAI.Sdk.DependencyInjection.$package_version.nupkg" \
+            "TypeSafeAI.Sdk.DependencyInjection.$package_version.snupkg"
+          do
+            size="$(awk -F'\t' -v name="$file" '$1 == name { print $2 }' <<< "$assets")"
+            if [[ -z "$size" ]]; then
+              echo "::error::$file is not attached to the $VERSION release."
+              status=1
+            elif [[ "$size" -eq 0 ]]; then
+              echo "::error::$file is attached to the $VERSION release but is empty."
+              status=1
+            else
+              echo "  ok   $file ($size bytes)"
+            fi
+          done
+
+          if [[ $status -ne 0 ]]; then
+            echo "Assets found on the release:"
+            echo "$assets"
+            exit 1
+          fi
+
+  # The last check in the release, and the only one made from outside: `publish-nuget` reports what
+  # nuget.org answered, this proves a stranger can find and install what was published. Indexing is
+  # asynchronous, so the first step waits for the packages to appear.
+  verify-published:
+    name: verify the published packages
+    needs: [publish-nuget]
+    if: ${{ !inputs.dry-run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
+        with:
+          dotnet-version: 10.0.x
+
+      # The flat container is what a restore reads, so it is what is polled. Both packages are
+      # checked: a version that indexed for one ID and not the other is exactly the kind of partial
+      # release this job exists to notice.
+      - name: Wait for both packages to appear on nuget.org
+        env:
+          VERSION: ${{ env.TAG }}
+        run: |
+          set -euo pipefail
+          package_version="${VERSION#v}"
+          # A tag may be mixed case (`v0.2.0-Beta.1`), and the flat container is addressed by the
+          # normalized, lowercase version. Package file names keep the original casing.
+          url_version="${package_version,,}"
+
+          for id in typesafeai.sdk typesafeai.sdk.dependencyinjection; do
+            url="https://api.nuget.org/v3-flatcontainer/$id/$url_version/$id.$url_version.nupkg"
+            echo "Waiting for $url"
+            timeout=$(( SECONDS + 900 ))
+            until curl --silent --fail --head --location "$url" > /dev/null; do
+              if (( SECONDS > timeout )); then
+                echo "::error::$id $package_version did not appear in the nuget.org flat container within 15 minutes."
+                exit 1
+              fi
+              sleep 15
+            done
+            echo "  ok   $id $package_version is indexed"
+          done
+
+      # Indexed is not the same as installable: this restores both packages into a project that
+      # knows nothing about this repository, resolving the real dependency graph from nuget.org.
+      # NUGET_PACKAGES points somewhere empty so the answer cannot come from a warm cache.
+      - name: Install both packages into a scratch project
+        env:
+          # Do not call this VERSION: MSBuild imports environment variables as project properties,
+          # and the v-prefixed release tag is not a valid NuGet project version.
+          RELEASE_TAG: ${{ env.TAG }}
+          NUGET_PACKAGES: ${{ runner.temp }}/published-packages
+        run: |
+          set -euo pipefail
+          package_version="${RELEASE_TAG#v}"
+          scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
+          feed="https://api.nuget.org/v3/index.json"
+
+          dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
+          for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
+            dotnet add "$scratch/smoke" package "$package" \
+              --version "$package_version" \
+              --no-restore
+          done
+
+          dotnet restore "$scratch/smoke" --source "$feed"
+          dotnet build "$scratch/smoke" -c Release --no-restore
+          echo "::notice::$package_version installs from nuget.org into an empty project."

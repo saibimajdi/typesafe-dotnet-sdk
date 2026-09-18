@@ -12,6 +12,16 @@ version is `0.x`, a breaking change increments the minor version, and the public
 tracked per project in `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` so that no change to
 it can happen by accident.
 
+### Changed
+
+- The NuGet package IDs are now `TypeSafeAI.Sdk` and
+  `TypeSafeAI.Sdk.DependencyInjection`. The public C# namespaces are now `TypeSafeAI`,
+  `TypeSafeAI.Serialization`, and `TypeSafeAI.DependencyInjection`; assembly names remain
+  unchanged. This is a source-breaking migration; see
+  [the package migration guide](docs/package-migration.md).
+- Repository metadata and documentation now use the canonical
+  `saibimajdi/typesafeai-dotnet-sdk` GitHub repository.
+
 ### Added
 
 - A searchable SDK documentation site with light/dark themes and automated GitHub Pages
@@ -62,7 +72,7 @@ it can happen by accident.
 - Configuration from `TYPESAFE_API_KEY`, `TYPESAFE_BASE_URL` (with `TYPESAFE_ENDPOINT` accepted as
   an alias), and `TYPESAFE_DEFAULT_MODEL`, with explicit options taking precedence and the SDK
   defaults (`https://api.typesafe.ai`, `jev-latest`, a 10 s per-attempt timeout) as the fallback.
-- `TypeSafe.Sdk.DependencyInjection` with `AddTypeSafeClient` for `IServiceCollection`, built on
+- `TypeSafeAI.Sdk.DependencyInjection` with `AddTypeSafeClient` for `IServiceCollection`, built on
   `IHttpClientFactory`, binding the `TypeSafe` configuration section and redacting credential
   headers from the framework's own HTTP logging.
 - Packaging and compatibility guarantees: `net8.0` and `net10.0` assets, trimming and
@@ -71,5 +81,5 @@ it can happen by accident.
 - Documentation: a quickstart, a guide to the question types and their documented limits, the
   confidence rules, composition patterns, forward compatibility, and retries and errors.
 
-[Unreleased]: https://github.com/saibimajdi/typesafe-dotnet-sdk/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/saibimajdi/typesafe-dotnet-sdk/releases/tag/v0.1.0
+[Unreleased]: https://github.com/saibimajdi/typesafeai-dotnet-sdk/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/saibimajdi/typesafeai-dotnet-sdk/releases/tag/v0.1.0

@@ -6,6 +6,9 @@
   <Folder Name="/samples/">
     <Project Path="samples/TypeSafe.Sdk.Samples/TypeSafe.Sdk.Samples.csproj" />
   </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/TypeSafe.BureauOfBadIdeas/TypeSafe.BureauOfBadIdeas.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/TypeSafe.Sdk.Tests/TypeSafe.Sdk.Tests.csproj" />
   </Folder>

@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using TypeSafe.Serialization;
+using TypeSafeAI.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A single typed judgment for a System One model to make about a

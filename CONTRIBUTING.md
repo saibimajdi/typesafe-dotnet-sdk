@@ -56,14 +56,25 @@ that would silently run the `net8.0` assembly on the .NET 10 runtime in CI too, 
 ## Getting started
 
 ```bash
-git clone https://github.com/saibimajdi/typesafe-dotnet-sdk.git
-cd typesafe-dotnet-sdk
+git clone https://github.com/saibimajdi/typesafeai-dotnet-sdk.git
+cd typesafeai-dotnet-sdk
 dotnet build TypeSafe.slnx
 ```
 
 There is no separate one-time install step. Restore happens as part of the first build, and
 Central Package Management means every package version already lives in
 `Directory.Packages.props`, so there is no tool manifest, workload, or bootstrapper to run.
+
+Every project commits a `packages.lock.json` next to its `.csproj`. Central Package Management
+pins the versions this repository names; the lock file pins the whole transitive graph that was
+actually restored, and CI restores in locked mode, so a change to a dependency is a change to the
+lock file or the build fails with `NU1004`. After changing anything in
+`Directory.Packages.props` — or adding a project, which has no lock file until it is restored once
+— regenerate them and commit the result:
+
+```bash
+dotnet restore TypeSafe.slnx --force-evaluate
+```
 
 Build and test:
 
@@ -101,6 +112,24 @@ dotnet test --solution TypeSafe.slnx --coverage
 Coverage is produced by `Microsoft.Testing.Extensions.CodeCoverage`. coverlet is deliberately
 not used anywhere in this repository; do not add it.
 
+CI enforces a floor on it. The thresholds live in the `coverage` job in
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) and are applied by
+[`eng/coverage-gate.py`](eng/coverage-gate.py), which you can run over your own run:
+
+```bash
+dotnet test --solution TypeSafe.slnx --coverage --coverage-output-format cobertura \
+  --results-directory ./TestResults
+python3 eng/coverage-gate.py --reports 'TestResults/**/*.cobertura.xml' \
+  --line 80 --branch 70 \
+  --assembly TypeSafe.Sdk:78:70 \
+  --assembly TypeSafe.Sdk.DependencyInjection:90:90
+```
+
+The gate is a floor, not a target. It exists so that a change which stops exercising a whole class
+of behaviour is caught in review; it deliberately sits a few points below the current numbers
+rather than tracking them, because a percentage that has to be nudged upward on every pull request
+teaches people to write tests for the number instead of for the behaviour.
+
 ## Repository layout
 
 | Path | Contents |
@@ -109,14 +138,15 @@ not used anywhere in this repository; do not add it.
 | `src/TypeSafe.Sdk.DependencyInjection/` | `IServiceCollection` registration on top of `IHttpClientFactory`. |
 | `tests/TypeSafe.Sdk.Tests/` | xunit.v3 tests, run against both target frameworks. |
 | `docs/` | User-facing documentation. Every sample in here must compile. |
-| `eng/` | Build and release helpers. |
+| `eng/` | Build and release helpers, including the coverage gate CI runs. |
 | `Directory.Build.props` | Compiler and analyzer settings shared by every project. |
 | `Directory.Packages.props` | Central Package Management: the single source of every package version. |
+| `packages.lock.json` | One per project. The restored transitive graph; regenerate it as described above. |
 | `TypeSafe.slnx` | The solution. It is XML, not the legacy `.sln` format. |
 
 ## Documentation website
 
-The [documentation site](https://saibimajdi.github.io/typesafe-dotnet-sdk/) is built with
+The [documentation site](https://saibimajdi.github.io/typesafeai-dotnet-sdk/) is built with
 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from the Markdown files in
 `docs/`. Edit those guides directly; `docs/README.md` becomes the site's home page. Add new
 guides to the navigation in `mkdocs.yml`. Link to other guides using relative `.md` links;
@@ -137,7 +167,7 @@ python -m mkdocs serve
 ```
 
 Open the URL printed by MkDocs, normally
-`http://127.0.0.1:8000/typesafe-dotnet-sdk/`. The preview includes the GitHub Pages repository
+`http://127.0.0.1:8000/typesafeai-dotnet-sdk/`. The preview includes the GitHub Pages repository
 prefix so relative links behave as they will in production.
 
 Before pushing, run the same build as the Documentation workflow:
@@ -162,7 +192,7 @@ the site, then deploys it with GitHub's Pages actions. It can also be run manual
 from the Actions tab, including after first enabling Pages or to retry a failed deployment.
 Manual runs on other branches only validate the build.
 
-The published address is `https://saibimajdi.github.io/typesafe-dotnet-sdk/`. If the repository
+The published address is `https://saibimajdi.github.io/typesafeai-dotnet-sdk/`. If the repository
 is renamed, moved, or given a custom domain, update `site_url` in `mkdocs.yml` and the links
 in this guide and the root README. See GitHub's
 [custom workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
@@ -340,7 +370,8 @@ Expectations:
 - **Be explicit about behaviour changes.** If a caller could observe a difference, say so in
   the description, even when the tests pass.
 - **CI must be green.** The build and test matrix runs on Linux, Windows, and macOS for both
-  target frameworks, plus formatting, markdown linting, CodeQL, and a dependency review.
+  target frameworks, plus formatting, markdown linting, the coverage gate, CodeQL, and a
+  dependency review.
 - **Review is a conversation.** Reviewers may ask for a different API shape or a smaller
   change. That is normal, and it is cheaper now than after a release.
 
@@ -355,7 +386,7 @@ need to.
 ## Getting help
 
 - General questions and design discussion:
-  [GitHub Discussions](https://github.com/saibimajdi/typesafe-dotnet-sdk/discussions).
+  [GitHub Discussions](https://github.com/saibimajdi/typesafeai-dotnet-sdk/discussions).
 - Bugs and feature requests:
-  [GitHub Issues](https://github.com/saibimajdi/typesafe-dotnet-sdk/issues/new/choose).
+  [GitHub Issues](https://github.com/saibimajdi/typesafeai-dotnet-sdk/issues/new/choose).
 - Anything about the TypeSafe API, service, accounts, or billing: see [SUPPORT.md](SUPPORT.md).

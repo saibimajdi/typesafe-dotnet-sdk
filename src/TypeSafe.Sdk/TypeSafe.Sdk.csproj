@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>TypeSafe.Sdk</PackageId>
+    <PackageId>TypeSafeAI.Sdk</PackageId>
+    <!-- Assembly identity intentionally remains stable across the package and namespace migration. -->
     <AssemblyName>TypeSafe.Sdk</AssemblyName>
-    <RootNamespace>TypeSafe</RootNamespace>
-    <Title>TypeSafe SDK for .NET</Title>
+    <RootNamespace>TypeSafeAI</RootNamespace>
+    <Title>TypeSafeAI SDK for .NET</Title>
   </PropertyGroup>
 
   <ItemGroup>

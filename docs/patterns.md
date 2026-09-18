@@ -10,7 +10,7 @@ Questions in one request are evaluated in parallel against the same state and co
 tokens. So ask every question that might matter, and read only the answers the current path needs.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var questions = new QuestionSet
 {
@@ -46,7 +46,7 @@ Act when the answer is clear, and escalate when it is not. The gate lives in you
 you can price the cost of being wrong.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 internal static class Routing
 {
@@ -82,7 +82,7 @@ internal static class Example
 The same gate works for a score, where `Variance` is often the more informative warning:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var severity = result.Score("severity");
 
@@ -100,7 +100,7 @@ For a noul there is no confidence to gate on, so gate on the probability itself 
 the middle:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var noul = result.Noul("is_bug");
 
@@ -131,7 +131,7 @@ you already have.
 different lengths combine meaningfully.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var result = await client.SystemOneAsync(
     ticket,
@@ -158,8 +158,8 @@ Because answers are immutable and round-trip through JSON, re-tuning weights aga
 costs nothing:
 
 ```csharp
-using TypeSafe;
-using TypeSafe.Serialization;
+using TypeSafeAI;
+using TypeSafeAI.Serialization;
 
 var cached = TypeSafeJson.DeserializeResult(storedJson);
 var parts = new WeightedScore[]
@@ -185,7 +185,7 @@ Different roles judge the same factors differently. `CompositeScore.Profiles` co
 named weightings from one set of answers, matching factors to score answers by the answer's `Id`:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var profiles = new Dictionary<string, IReadOnlyDictionary<string, double>>
 {
@@ -230,7 +230,7 @@ they are evaluated in parallel and cost only their tokens, so the branch you do 
 almost nothing.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var intent = new ChoiceQuestion(
     "intent",
@@ -275,7 +275,7 @@ a record you have to fetch, or an answer that determines which data is relevant 
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var first = await client.SystemOneAsync(ticket, [new ChoiceQuestion("intent", "What does the customer want?", ["refund", "other"])]);
 

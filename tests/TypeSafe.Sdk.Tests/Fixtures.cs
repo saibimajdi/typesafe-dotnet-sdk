@@ -1,4 +1,4 @@
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// The request and response bodies printed verbatim in the TypeSafe documentation.

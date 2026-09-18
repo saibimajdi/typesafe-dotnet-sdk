@@ -1,4 +1,4 @@
-# TypeSafe .NET SDK documentation
+# TypeSafeAI .NET SDK documentation
 
 Ask typed questions about text or JSON state. Get probabilities, labels, and scores you can
 use directly in C# — with batching, retries, dependency injection, and forward compatibility.
@@ -9,11 +9,11 @@ It is independent of, and not affiliated with or endorsed by, TypeSafe AI.
 ## Install
 
 ```bash
-dotnet add package TypeSafe.Sdk
+dotnet add package TypeSafeAI.Sdk
 ```
 
 For `IHttpClientFactory` and `IServiceCollection` integration, also install
-`TypeSafe.Sdk.DependencyInjection`.
+`TypeSafeAI.Sdk.DependencyInjection`.
 
 **[Start with the quickstart →](quickstart.md)** — create your first request, configure the
 client, and work with typed answers.
@@ -29,6 +29,7 @@ client, and work with typed answers.
 | [Composition patterns](patterns.md) | You want to batch questions, gate an action on confidence, combine several scores, or route by intent. |
 | [Forward compatibility](forward-compatibility.md) | The API has a field, a question kind, or an answer kind the SDK does not model. |
 | [Retries and errors](retries-and-errors.md) | A call failed, or you need to reason about timeouts, retries, and budgets before one does. |
+| [Package migration](package-migration.md) | You are moving from the former NuGet package IDs, namespaces, or repository URL. |
 
 ## The three ideas worth internalising
 
@@ -50,12 +51,12 @@ a threshold, is caller code. See [Answers and confidence](answers-and-confidence
 
 ## Other places to look
 
-- [Contributing guide](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CONTRIBUTING.md) — build, test, coding standards, and how to add a public
+- [Contributing guide](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/CONTRIBUTING.md) — build, test, coding standards, and how to add a public
   API.
-- [Changelog](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md) — what shipped when.
-- [Releasing](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/RELEASING.md) — how a version reaches nuget.org, and the one-time trusted
+- [Changelog](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/CHANGELOG.md) — what shipped when.
+- [Releasing](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/RELEASING.md) — how a version reaches nuget.org, and the one-time trusted
   publishing setup behind it.
-- [Support](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
+- [Support](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/SUPPORT.md) — where to ask what, and the boundary between this SDK and the TypeSafe
   service.
 - [TypeSafe's own documentation](https://docs.typesafe.ai/) — the authority on the API itself:
   states, primitives, confidence, and the HTTP contract this SDK implements.

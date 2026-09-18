@@ -1,4 +1,4 @@
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 /// <summary>
 /// The outcome of one HTTP attempt.
 /// </summary>

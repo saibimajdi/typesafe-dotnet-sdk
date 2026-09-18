@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Environment variable names shared with the TypeSafe Python and JavaScript SDKs, and the

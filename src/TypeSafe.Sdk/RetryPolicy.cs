@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Controls how the SDK retries a request that fails with a retryable error.

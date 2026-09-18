@@ -25,10 +25,13 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
 
+      # Pinned to the v5.0.0 commit rather than a floating `v5`: actions/dependency-review-action
+      # publishes `v5.0.0` but never published a `v5` tag, so `@v5` fails to resolve and the job
+      # dies before it checks anything.
       - name: Review dependencies
-        uses: actions/dependency-review-action@v5
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v5.0.0
         with:
           # fail-on-severity defaults to `low`. This repository fails on high and critical only,
           # so a low-severity advisory in a transitive test dependency does not block work.

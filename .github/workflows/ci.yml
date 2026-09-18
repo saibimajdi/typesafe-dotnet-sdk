@@ -7,7 +7,11 @@
 #   * `fetch-depth: 0` is required: MinVer walks the tag history to derive the package version,
 #     and SourceLink needs the commit metadata.
 #   * `CI: 'true'` is what turns on `ContinuousIntegrationBuild` in Directory.Build.props, which
-#     in turn enables deterministic, path-mapped builds.
+#     in turn enables deterministic, path-mapped builds. It also turns on `RestoreLockedMode`, so
+#     every `dotnet restore` below restores exactly the graph recorded in packages.lock.json.
+#   * Every `uses:` is pinned to a commit SHA, with the tag it came from in a trailing comment.
+#     A tag is mutable and an action runs with this repository's token; Dependabot moves the pins
+#     and the comments forward.
 name: CI
 
 on:
@@ -47,13 +51,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
           # MinVer and SourceLink need the full history and the tags.
           fetch-depth: 0
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
         with:
           # 10.0.x is the SDK that global.json pins and that builds every project. 8.0.x is listed
           # as well because the test project multi-targets net8.0;net10.0 and its tests are
@@ -63,14 +67,21 @@ jobs:
           dotnet-version: |
             10.0.x
             8.0.x
-          # There are no packages.lock.json files in this repository, so point the cache key at
-          # the files that actually decide the dependency graph: the CPM version list and the
-          # project files. Bump a version in Directory.Packages.props and the cache rolls over.
+          # The cache key is the lock files. They pin the entire transitive graph, so they change
+          # exactly when the restored packages change, which is what a cache key needs to track:
+          # the CPM version list and the project files only decide the graph indirectly.
+          # Directory.Packages.props is listed as well so that a dependency change invalidates the
+          # cache on the first run, rather than serving a cache built from the old graph only for
+          # the locked restore below to reject it.
           cache: true
           cache-dependency-path: |
             Directory.Packages.props
-            **/*.csproj
+            **/packages.lock.json
 
+      # Restore is locked on CI: RestoreLockedMode follows CI=true in Directory.Build.props, so a
+      # dependency change that was not accompanied by regenerated lock files fails here with NU1004
+      # instead of restoring a different graph than the one that was reviewed. See CONTRIBUTING.md
+      # for how to regenerate them.
       - name: Restore
         run: dotnet restore TypeSafe.slnx
 
@@ -88,7 +99,7 @@ jobs:
 
       - name: Upload test results and coverage
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
         with:
           name: test-results-${{ matrix.os }}
           path: |
@@ -97,22 +108,110 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  # The coverage gate runs once, on the reports the Ubuntu leg produced, rather than in every leg:
+  # the same code measured three times would give three verdicts and three comments, and the
+  # platform that runs the tests does not change which lines of a library they execute.
+  coverage:
+    name: coverage gate
+    needs: [build-test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # Needed to keep one summary comment updated on the pull request.
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+
+      # No .NET setup: the gate reads cobertura XML and needs nothing else.
+      - name: Download the Ubuntu coverage reports
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          name: test-results-ubuntu-latest
+          path: TestResults
+
+      # Real thresholds, with room to move: line coverage sits near 83% and branch near 77%, and
+      # the two shipping assemblies are gated individually so one of them cannot be carried by the
+      # other. Raise these deliberately; lowering one is a decision worth explaining in the commit.
+      - name: Check coverage thresholds
+        run: |
+          python3 eng/coverage-gate.py \
+            --reports 'TestResults/**/*.cobertura.xml' \
+            --line 80 \
+            --branch 70 \
+            --assembly TypeSafe.Sdk:78:70 \
+            --assembly TypeSafe.Sdk.DependencyInjection:90:90 \
+            --markdown coverage-summary.md
+
+      # Runs even when the gate failed, so the numbers that caused the failure are on the run page
+      # and not only in the job log. When the gate could not measure anything there is no summary
+      # to show, and the run page says so rather than staying silent.
+      - name: Add the summary to the run
+        if: always()
+        run: |
+          if [[ -f coverage-summary.md ]]; then
+            cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "## Code coverage"
+              echo
+              echo "Coverage could not be measured; see the \`Check coverage thresholds\` step."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # One comment per pull request, edited in place rather than appended to on every push. The
+      # marker is what identifies our comment, so a stale-bot comment (same author) is never
+      # overwritten by accident. Fork pull requests get a read-only token, so they keep the job
+      # summary and skip the comment instead of failing on a permission error.
+      - name: Update the pull request comment
+        if: >-
+          always()
+          && github.event_name == 'pull_request'
+          && github.event.pull_request.head.repo.full_name == github.repository
+          && hashFiles('coverage-summary.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          jq -Rs '{body: .}' coverage-summary.md > comment.json
+
+          # `--paginate` runs the filter once per page and concatenates the output, so the filter
+          # emits one id per line and `tail` takes the most recent match - comments come back
+          # oldest first. Piping this through `--jq 'last'` instead would pick the last match on
+          # each page, which is a different comment once a pull request has more than one page.
+          existing="$(
+            gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate \
+              --jq '.[] | select(.body | startswith("<!-- coverage-gate -->")) | .id' \
+              | tail -n 1
+          )"
+
+          if [[ -n "$existing" ]]; then
+            gh api --method PATCH "repos/${{ github.repository }}/issues/comments/$existing" \
+              --input comment.json > /dev/null
+          else
+            gh api --method POST "repos/${{ github.repository }}/issues/$PR/comments" \
+              --input comment.json > /dev/null
+          fi
+
   format:
     name: dotnet format
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
         with:
           dotnet-version: 10.0.x
           cache: true
           cache-dependency-path: |
             Directory.Packages.props
-            **/*.csproj
+            **/packages.lock.json
 
       - name: Restore
         run: dotnet restore TypeSafe.slnx
@@ -131,7 +230,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
           # A full history is required: the scan covers every commit, not just the tip, so a key
           # that was committed and later removed is still caught.
@@ -179,7 +278,7 @@ jobs:
       # of only in the job log.
       - name: Upload findings
         if: always()
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4
         with:
           sarif_file: gitleaks-results.sarif
           category: gitleaks
@@ -190,11 +289,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
 
       # Configuration comes from .markdownlint-cli2.jsonc at the repository root, which is the
       # same file a local `npx markdownlint-cli2` run picks up.
       - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@v24
+        uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff  # v24
         with:
           globs: '**/*.md'

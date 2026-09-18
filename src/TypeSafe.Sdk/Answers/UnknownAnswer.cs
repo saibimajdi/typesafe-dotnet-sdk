@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// An answer whose kind this SDK version does not model.

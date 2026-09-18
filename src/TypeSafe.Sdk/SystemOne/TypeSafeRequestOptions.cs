@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Per-call overrides that take precedence over the client's own settings for one request only.

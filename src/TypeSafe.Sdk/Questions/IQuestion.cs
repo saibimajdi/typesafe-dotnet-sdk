@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Pairs a question with the answer type it produces, so an answer can be retrieved without a

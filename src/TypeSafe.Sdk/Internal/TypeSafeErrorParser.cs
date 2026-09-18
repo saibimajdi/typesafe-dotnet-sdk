@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Net;
 using System.Text.Json;
 
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 
 /// <summary>
 /// Turns an unsuccessful response into the right <see cref="TypeSafeApiException"/>.

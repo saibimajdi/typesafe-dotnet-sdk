@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using TypeSafe.Internal;
-using TypeSafe.Serialization;
+using TypeSafeAI.Internal;
+using TypeSafeAI.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Turns a successful HTTP response into the SDK's model types.
