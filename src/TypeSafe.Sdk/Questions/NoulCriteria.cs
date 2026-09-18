@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Optional descriptions of what a yes and a no mean for a <see cref="NoulQuestion"/>.

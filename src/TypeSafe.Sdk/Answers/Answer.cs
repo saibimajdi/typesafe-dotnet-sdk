@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using TypeSafe.Serialization;
+using TypeSafeAI.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The typed value returned for one question.

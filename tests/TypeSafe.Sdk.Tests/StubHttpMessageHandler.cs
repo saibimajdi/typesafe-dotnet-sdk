@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// A captured request, snapshotted because the client disposes the request it sent.

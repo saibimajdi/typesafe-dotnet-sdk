@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 
 /// <summary>
 /// Source-generated log messages.

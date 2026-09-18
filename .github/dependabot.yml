@@ -83,6 +83,12 @@ updates:
         update-types: [version-update:semver-major]
 
   # GitHub Actions. Bumps the workflow files under .github/workflows.
+  #
+  # Every `uses:` there is pinned to a commit SHA with the tag it came from in a trailing comment,
+  # because a tag is mutable and an action runs with this repository's token. Dependabot maintains
+  # both halves of that pin: it moves the SHA to the new release and rewrites the comment. Do not
+  # "simplify" a pin back to `@v7` by hand - that is the supply-chain hole the pin closes, and
+  # Scorecard's Pinned-Dependencies check flags it.
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

@@ -6,7 +6,7 @@
       genuinely exercised and not just built.
     -->
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-    <RootNamespace>TypeSafe.Tests</RootNamespace>
+    <RootNamespace>TypeSafeAI.Tests</RootNamespace>
     <AssemblyName>TypeSafe.Sdk.Tests</AssemblyName>
     <OutputType>Exe</OutputType>
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>

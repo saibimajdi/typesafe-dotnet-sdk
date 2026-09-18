@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TypeSafe.Serialization;
+using TypeSafeAI.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The answers to a System One request, keyed by the question ids that were supplied.

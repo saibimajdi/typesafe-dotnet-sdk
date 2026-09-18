@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 using System.Text.Json;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies that the SDK puts exactly the documented bytes on the wire.
@@ -155,8 +155,8 @@ public sealed class WireFormatTests
     [Fact]
     public async Task SerializationIsDeterministic()
     {
-        var (first, firstHandler) = TestClient.Returning(TypeSafe.Tests.TestClient.TriageResponse);
-        var (second, secondHandler) = TestClient.Returning(TypeSafe.Tests.TestClient.TriageResponse);
+        var (first, firstHandler) = TestClient.Returning(TypeSafeAI.Tests.TestClient.TriageResponse);
+        var (second, secondHandler) = TestClient.Returning(TypeSafeAI.Tests.TestClient.TriageResponse);
 
         await first.SystemOneAsync("state", TestClient.TriageQuestions());
         await second.SystemOneAsync("state", TestClient.TriageQuestions());

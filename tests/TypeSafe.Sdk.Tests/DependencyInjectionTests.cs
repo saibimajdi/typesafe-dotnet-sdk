@@ -1,9 +1,9 @@
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TypeSafe.DependencyInjection;
+using TypeSafeAI.DependencyInjection;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies the <c>IHttpClientFactory</c> registration path.

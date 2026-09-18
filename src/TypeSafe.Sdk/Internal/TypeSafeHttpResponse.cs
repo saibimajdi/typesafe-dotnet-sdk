@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 
 /// <summary>
 /// The raw outcome of one successful HTTP exchange.

@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 using System.Text.Json;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies that the documented request rules are enforced before a network call is made.

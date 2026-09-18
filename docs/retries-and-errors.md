@@ -28,7 +28,7 @@ All of the properties are `init`-only, so a policy is configured with an object 
 immutable once built:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var options = new TypeSafeClientOptions
 {
@@ -51,7 +51,7 @@ To turn retrying off entirely, use `RetryPolicy.None`, which is the same thing a
 `new RetryPolicy { MaxRetries = 0 }`:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var options = new TypeSafeClientOptions { Retry = RetryPolicy.None };
 ```
@@ -59,7 +59,7 @@ var options = new TypeSafeClientOptions { Retry = RetryPolicy.None };
 Or for a single call, through `TypeSafeRequestOptions`:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var result = await client.SystemOneAsync(new SystemOneRequest
 {
@@ -80,7 +80,7 @@ suppress a retry the built-in rules already allow:
 
 ```csharp
 using System.Net;
-using TypeSafe;
+using TypeSafeAI;
 
 var policy = new RetryPolicy
 {
@@ -120,7 +120,7 @@ token surfaces as `OperationCanceledException`, deliberately distinct from `Type
 so that "I cancelled this" and "the server was too slow" are never confused:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
@@ -172,7 +172,7 @@ an unrecognised answer kind becomes `UnknownAnswer`. See
 ### Reading an API failure
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 try
 {
@@ -208,14 +208,14 @@ query parameters, or a fragment — it is safe to log and safe to paste into an 
 
 `RequestId` is the value of the `x-typesafe-request-id` header. It is not a credential, it is what
 TypeSafe support asks for when investigating a specific request, and it is safe to share publicly.
-See [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md) for the rest of that list.
+See [SECURITY.md](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/SECURITY.md) for the rest of that list.
 
 ### Catching in the right order
 
 Derived types must be caught before their bases, or the base clause makes them unreachable:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 try
 {
@@ -275,7 +275,7 @@ kind:
 
 ```csharp
 using Microsoft.Extensions.Logging;
-using TypeSafe;
+using TypeSafeAI;
 
 using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
@@ -288,6 +288,6 @@ logged as `***`. Request and response bodies are not redacted — they are your 
 them would make the logs untrustworthy for debugging. Do not enable debug logging of bodies in an
 environment where those logs go somewhere you would not send the data itself.
 
-`TypeSafe.Sdk.DependencyInjection` wires the container's `ILoggerFactory` in automatically, and
+`TypeSafeAI.Sdk.DependencyInjection` wires the container's `ILoggerFactory` in automatically, and
 additionally stops `IHttpClientFactory`'s own handler from logging the `Authorization` header at
 `Trace` level.

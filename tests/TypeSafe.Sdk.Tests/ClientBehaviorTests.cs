@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies transport-level behaviour: authentication, URLs, headers, and configuration resolution.

@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The API key is valid but is not allowed to perform this request (HTTP 403).

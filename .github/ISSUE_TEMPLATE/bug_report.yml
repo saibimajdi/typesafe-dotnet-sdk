@@ -20,7 +20,7 @@ body:
     attributes:
       label: Before you file
       options:
-        - label: I am using the latest release of `TypeSafe.Sdk`.
+        - label: I am using the latest release of `TypeSafeAI.Sdk`.
           required: true
         - label: I searched the existing issues for the same problem.
           required: true
@@ -31,7 +31,7 @@ body:
     id: sdk-version
     attributes:
       label: SDK version
-      description: The `TypeSafe.Sdk` package version. Find it in your `.csproj`, your lock file, or from the assembly.
+      description: The `TypeSafeAI.Sdk` package version. Find it in your `.csproj`, your lock file, or from the assembly.
       placeholder: 0.1.0
     validations:
       required: true

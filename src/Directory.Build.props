@@ -14,18 +14,18 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
 
-    <Product>TypeSafe SDK for .NET</Product>
+    <Product>TypeSafeAI SDK for .NET</Product>
     <Authors>Majdi Saibi and contributors</Authors>
     <Company>Majdi Saibi</Company>
     <Copyright>Copyright (c) 2026 Majdi Saibi and contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/saibimajdi/typesafe-dotnet-sdk</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/saibimajdi/typesafe-dotnet-sdk</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/saibimajdi/typesafeai-dotnet-sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/saibimajdi/typesafeai-dotnet-sdk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>typesafe;ai;systemone;jev;classification;confidence;llm;sdk;client</PackageTags>
-    <Description>Community .NET client for the TypeSafe AI System One API. Ask typed yes/no (noul), choice, and score questions about any text or structured state, and get structured, confidence-scored answers back. Not affiliated with or endorsed by TypeSafe AI.</Description>
+    <PackageTags>typesafeai;typesafe;ai;systemone;jev;classification;confidence;llm;sdk;client</PackageTags>
+    <Description>Community .NET SDK for the TypeSafe AI System One API. Ask typed yes/no (noul), choice, and score questions about any text or structured state, and get structured, confidence-scored answers back. Not affiliated with or endorsed by TypeSafe AI.</Description>
 
     <!-- Symbols: a .snupkg alongside the .nupkg, with everything embedded so the
          package is self-contained for source-stepping. -->
@@ -71,5 +71,22 @@
     <AdditionalFiles Include="PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
   </ItemGroup>
+
+  <!--
+    Microsoft.SourceLink.GitHub normally derives its raw-content URL from the checkout's `origin`.
+    GitHub redirects the former repository URL, but embedded SourceLink documents should use the
+    canonical repository even when a contributor has not updated an existing clone's remote yet.
+    Run after the provider initializes SourceRoot so its remote-derived value cannot overwrite this
+    one. Assembly identity is intentionally unaffected.
+  -->
+  <Target Name="UseCanonicalTypeSafeAISourceLinkUrl"
+          BeforeTargets="_GenerateSourceLinkFile">
+    <ItemGroup>
+      <SourceRoot Update="@(SourceRoot)"
+                  Condition="'%(SourceRoot.RepositoryUrl)' != ''"
+                  RepositoryUrl="$(RepositoryUrl)"
+                  SourceLinkUrl="https://raw.githubusercontent.com/saibimajdi/typesafeai-dotnet-sdk/$(SourceRevisionId)/*" />
+    </ItemGroup>
+  </Target>
 
 </Project>

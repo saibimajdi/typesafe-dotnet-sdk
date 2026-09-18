@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace TypeSafe.DependencyInjection;
+namespace TypeSafeAI.DependencyInjection;
 
 /// <summary>
 /// Dependency injection registration for the TypeSafe SDK.

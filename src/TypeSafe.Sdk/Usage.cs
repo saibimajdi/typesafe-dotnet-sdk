@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Token usage for one request.

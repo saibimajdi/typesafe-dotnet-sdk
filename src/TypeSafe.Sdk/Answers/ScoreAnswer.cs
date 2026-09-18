@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The answer to a <see cref="ScoreQuestion"/>: the probability-weighted position along the

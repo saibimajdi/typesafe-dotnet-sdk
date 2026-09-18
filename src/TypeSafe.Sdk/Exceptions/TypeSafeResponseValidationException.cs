@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The API returned a successful HTTP response whose body was missing or structurally invalid.

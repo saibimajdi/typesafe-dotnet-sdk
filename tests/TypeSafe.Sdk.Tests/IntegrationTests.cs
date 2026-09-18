@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 using System.Text.Json;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Tests that call the real TypeSafe API.

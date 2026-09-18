@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Nodes;
 
-namespace TypeSafe.Serialization;
+namespace TypeSafeAI.Serialization;
 
 /// <summary>
 /// Writes the wire form of a <see cref="Question"/>, and reads it back.

@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Statistics over a probability distribution, offered so callers do not have to re-implement

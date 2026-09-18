@@ -4,9 +4,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using TypeSafe.Internal;
+using TypeSafeAI.Internal;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Sends HTTP requests and applies the retry policy.

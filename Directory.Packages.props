@@ -10,7 +10,7 @@
 
     <!--
       Transitive pinning is deliberately off. When it is on, every transitive dependency is
-      promoted to a direct dependency in the generated nuspec, so TypeSafe.Sdk ended up declaring
+      promoted to a direct dependency in the generated nuspec, so TypeSafeAI.Sdk ended up declaring
       Microsoft.Extensions.DependencyInjection.Abstractions merely because
       Microsoft.Extensions.Logging.Abstractions needs it. A client SDK's dependency list is part of
       its contract, so it should contain exactly what the code references and nothing more. Direct

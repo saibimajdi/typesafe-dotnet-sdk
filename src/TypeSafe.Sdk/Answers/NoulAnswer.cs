@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The answer to a <see cref="NoulQuestion"/>: the probability that the answer is yes.

@@ -18,7 +18,7 @@ last, so those fields win over the SDK's own:
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var question = new NoulQuestion(
     "is_urgent",
@@ -35,7 +35,7 @@ A whole request accepts the same thing at the top level of the body, through
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var result = await client.SystemOneAsync(new SystemOneRequest
 {
@@ -54,7 +54,7 @@ the request object:
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var result = await client.SystemOneAsync(new SystemOneRequest
 {
@@ -79,7 +79,7 @@ the API adds a nested field inside an object the SDK already sends, send the who
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var question = new RawQuestion(
     "sentiment_strength",
@@ -108,7 +108,7 @@ keeps the complete body in `Raw`, logs a warning, and leaves every other answer 
 untouched.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 foreach (var (id, unknown) in result.UnknownAnswers)
 {
@@ -137,7 +137,7 @@ existing one.
 model:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var urgency = result.Noul("is_urgent");
 
@@ -151,7 +151,7 @@ if (urgency.AdditionalProperties.TryGetValue("new_answer_field", out var value))
 hatch for anything at the top level:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 if (result.RawJson.TryGetProperty("new_top_level_field", out var extra))
 {
@@ -166,8 +166,8 @@ if (result.RawJson.TryGetProperty("new_top_level_field", out var extra))
 Unmodelled fields survive serialization, so a cached result is still complete when it is read back:
 
 ```csharp
-using TypeSafe;
-using TypeSafe.Serialization;
+using TypeSafeAI;
+using TypeSafeAI.Serialization;
 
 var json = TypeSafeJson.Serialize(result);
 var replayed = TypeSafeJson.DeserializeResult(json);
@@ -187,6 +187,6 @@ and is therefore not included; persist it separately if you need it later.
 
 The escape hatches exist so nothing is ever blocked, not so that everything stays raw. If you are
 using `RawQuestion` or reading `Answer.AdditionalProperties` for something you rely on regularly,
-that is a good [feature request](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/.github/ISSUE_TEMPLATE/feature_request.yml): a modelled type
+that is a good [feature request](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/.github/ISSUE_TEMPLATE/feature_request.yml): a modelled type
 gets XML documentation, compile-time type checking, and a place in the tracked public API surface,
 none of which a raw body can offer.

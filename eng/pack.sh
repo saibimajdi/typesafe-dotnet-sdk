@@ -74,7 +74,11 @@ case "$exact_tag" in
 esac
 
 step "Restore"
-dotnet restore "$solution"
+# Locked mode, exactly as CI restores: the graph that gets packed has to be the graph that was
+# reviewed. A change to Directory.Packages.props whose lock files were never regenerated fails here
+# instead of at the tag. Regenerate them with:
+#   dotnet restore "$solution" --force-evaluate
+dotnet restore "$solution" --locked-mode
 
 step "Build ($configuration)"
 dotnet build "$solution" -c "$configuration" --no-restore
@@ -90,7 +94,7 @@ dotnet pack "$solution" -c "$configuration" --no-build -o "$output"
 
 step "Verify the packages"
 status=0
-for project in TypeSafe.Sdk TypeSafe.Sdk.DependencyInjection; do
+for project in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
     for extension in nupkg snupkg; do
         file="$output/$project.$version.$extension"
         if [[ -f "$file" ]]; then

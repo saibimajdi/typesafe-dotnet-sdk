@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The TypeSafe API failed to process the request, or was overloaded (HTTP 5xx).

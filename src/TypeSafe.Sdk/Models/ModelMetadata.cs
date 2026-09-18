@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A model available to the account.

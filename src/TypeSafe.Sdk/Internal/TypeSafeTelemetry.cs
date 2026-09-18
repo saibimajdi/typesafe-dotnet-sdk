@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 
 /// <summary>
 /// The SDK's <see cref="ActivitySource"/> and <see cref="Meter"/>.
