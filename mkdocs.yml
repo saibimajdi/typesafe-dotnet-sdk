@@ -44,6 +44,7 @@ nav:
   - Overview: README.md
   - Get started:
       - Quickstart: quickstart.md
+      - API reference: api-reference.md
   - Core concepts:
       - Questions: questions.md
       - Answers & confidence: answers-and-confidence.md

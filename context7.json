@@ -1,0 +1,25 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "TypeSafe .NET SDK",
+  "description": "Community-maintained .NET client for the TypeSafe AI System One API.",
+  "folders": [
+    "docs"
+  ],
+  "excludeFiles": [
+    "CONTRIBUTING.md",
+    "RELEASING.md",
+    "PublicAPI.Shipped.txt",
+    "PublicAPI.Unshipped.txt"
+  ],
+  "rules": [
+    "Prefer the authored README and docs examples over generated API summaries.",
+    "Use TypeSafeClient instead of constructing System One REST requests manually.",
+    "BaseUrl is an API root without a version segment; the SDK appends /v1/systemone.",
+    "RetryAttempt.Attempt is one-based: attempt 1 is the initial request that failed."
+  ],
+  "previousVersions": [
+    {
+      "tag": "v0.1.0-alpha.1"
+    }
+  ]
+}
