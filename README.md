@@ -65,11 +65,11 @@ Get an API key from the [TypeSafe console](https://console.typesafe.ai/) and put
 `TYPESAFE_API_KEY` environment variable:
 
 ```bash
-export TYPESAFE_API_KEY="ts_..."
+export TYPESAFE_API_KEY="apikey_..."
 ```
 
 ```powershell
-$env:TYPESAFE_API_KEY = "ts_..."
+$env:TYPESAFE_API_KEY = "apikey_..."
 ```
 
 Then:
