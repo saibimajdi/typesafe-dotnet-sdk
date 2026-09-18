@@ -246,12 +246,12 @@ jobs:
       # it is happy. Re-running a rehearsal restores the version that is already there, which
       # `--skip-duplicate` made a no-op - the check is the same either way.
       #
-      # The config file is checked in and holds no secret: NuGet substitutes %GH_TOKEN% and the
-      # Actions-provided variables when it reads it. See .github/nuget.rehearsal.config.
+      # The config file is checked in and holds no secret. NuGet reads the credentials for its
+      # `github` source from NuGetPackageSourceCredentials_github below.
       - name: Restore both packages from the rehearsal feed
         env:
           VERSION: ${{ env.TAG }}
-          GH_TOKEN: ${{ github.token }}
+          NuGetPackageSourceCredentials_github: Username=${{ github.actor }};Password=${{ github.token }};ValidAuthenticationTypes=Basic
           # A directory of its own, so nothing here can be satisfied from the CI package cache.
           NUGET_PACKAGES: ${{ runner.temp }}/rehearsal-packages
         run: |
@@ -259,7 +259,7 @@ jobs:
           package_version="${VERSION#v}"
           scratch="$(mktemp -d)"
 
-          dotnet new console --output "$scratch/smoke" --name Smoke
+          dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
           for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
             dotnet add "$scratch/smoke" package "$package" \
               --version "$package_version" \
