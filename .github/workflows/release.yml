@@ -246,18 +246,27 @@ jobs:
       # it is happy. Re-running a rehearsal restores the version that is already there, which
       # `--skip-duplicate` made a no-op - the check is the same either way.
       #
-      # The config file is checked in and holds no secret. NuGet reads the credentials for its
-      # `github` source from NuGetPackageSourceCredentials_github below.
+      # The checked-in config holds no secret. Following GitHub's documented Actions setup, this
+      # step adds the short-lived token to a disposable copy and deletes it when the step exits.
       - name: Restore both packages from the rehearsal feed
         env:
           VERSION: ${{ env.TAG }}
-          NuGetPackageSourceCredentials_github: Username=${{ github.actor }};Password=${{ github.token }};ValidAuthenticationTypes=Basic
+          GH_TOKEN: ${{ github.token }}
           # A directory of its own, so nothing here can be satisfied from the CI package cache.
           NUGET_PACKAGES: ${{ runner.temp }}/rehearsal-packages
         run: |
           set -euo pipefail
           package_version="${VERSION#v}"
           scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
+          config="$scratch/nuget.config"
+
+          cp "$GITHUB_WORKSPACE/.github/nuget.rehearsal.config" "$config"
+          dotnet nuget update source github \
+            --username "$GITHUB_ACTOR" \
+            --password "$GH_TOKEN" \
+            --store-password-in-clear-text \
+            --configfile "$config"
 
           dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
           for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
@@ -267,7 +276,7 @@ jobs:
           done
 
           dotnet restore "$scratch/smoke" \
-            --configfile "$GITHUB_WORKSPACE/.github/nuget.rehearsal.config"
+            --configfile "$config"
           dotnet build "$scratch/smoke" -c Release --no-restore
 
           echo "::notice::Both packages restore from the rehearsal feed at version $package_version."
