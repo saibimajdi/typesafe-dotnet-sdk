@@ -250,13 +250,15 @@ jobs:
       # step adds the short-lived token to a disposable copy and deletes it when the step exits.
       - name: Restore both packages from the rehearsal feed
         env:
-          VERSION: ${{ env.TAG }}
+          # Do not call this VERSION: MSBuild imports environment variables as project properties,
+          # and the v-prefixed release tag is not a valid NuGet project version.
+          RELEASE_TAG: ${{ env.TAG }}
           GH_TOKEN: ${{ github.token }}
           # A directory of its own, so nothing here can be satisfied from the CI package cache.
           NUGET_PACKAGES: ${{ runner.temp }}/rehearsal-packages
         run: |
           set -euo pipefail
-          package_version="${VERSION#v}"
+          package_version="${RELEASE_TAG#v}"
           scratch="$(mktemp -d)"
           trap 'rm -rf "$scratch"' EXIT
           config="$scratch/nuget.config"
