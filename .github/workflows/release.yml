@@ -216,7 +216,9 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: |
+            10.0.x
+            8.0.x
 
       # GitHub Packages is the rehearsal feed: it is a real NuGet v3 feed with the rules that matter
       # here (an API key, immutable versions, `--skip-duplicate` semantics), and it needs no secret
@@ -261,6 +263,10 @@ jobs:
           trap 'rm -rf "$scratch"' EXIT
           config="$scratch/nuget.config"
 
+          dotnet new globaljson \
+            --output "$scratch" \
+            --sdk-version 8.0.100 \
+            --roll-forward latestFeature
           cp "$GITHUB_WORKSPACE/.github/nuget.rehearsal.config" "$config"
           dotnet nuget update source github \
             --username "$GITHUB_ACTOR" \
@@ -288,10 +294,14 @@ jobs:
               --no-restore
           done
 
-          dotnet restore "$scratch/smoke" \
-            --configfile "$config" \
-            --verbosity diagnostic
-          dotnet build "$scratch/smoke" -c Release --no-restore
+          (
+            cd "$scratch"
+            echo "Consumer restore SDK: $(dotnet --version)"
+            dotnet restore smoke \
+              --configfile "$config" \
+              --verbosity diagnostic
+            dotnet build smoke -c Release --no-restore
+          )
 
           echo "::notice::Both packages restore from the rehearsal feed at version $package_version."
 
