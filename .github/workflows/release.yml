@@ -518,20 +518,24 @@ jobs:
       # NUGET_PACKAGES points somewhere empty so the answer cannot come from a warm cache.
       - name: Install both packages into a scratch project
         env:
-          VERSION: ${{ env.TAG }}
+          # Do not call this VERSION: MSBuild imports environment variables as project properties,
+          # and the v-prefixed release tag is not a valid NuGet project version.
+          RELEASE_TAG: ${{ env.TAG }}
           NUGET_PACKAGES: ${{ runner.temp }}/published-packages
         run: |
           set -euo pipefail
-          package_version="${VERSION#v}"
+          package_version="${RELEASE_TAG#v}"
           scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
           feed="https://api.nuget.org/v3/index.json"
 
-          dotnet new console --output "$scratch/smoke" --name Smoke
+          dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
           for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
             dotnet add "$scratch/smoke" package "$package" \
               --version "$package_version" \
-              --source "$feed"
+              --no-restore
           done
 
+          dotnet restore "$scratch/smoke" --source "$feed"
           dotnet build "$scratch/smoke" -c Release --no-restore
           echo "::notice::$package_version installs from nuget.org into an empty project."
