@@ -277,7 +277,11 @@ jobs:
             echo "GitHub Packages probe for $package_path returned HTTP $status."
           done
 
-          dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
+          dotnet new console \
+            --output "$scratch/smoke" \
+            --name Smoke \
+            --framework net8.0 \
+            --no-restore
           for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
             dotnet add "$scratch/smoke" package "$package" \
               --version "$package_version" \
