@@ -1,6 +1,6 @@
-using TypeSafe.Internal;
+using TypeSafeAI.Internal;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The default <see cref="IModelsResource"/> implementation.

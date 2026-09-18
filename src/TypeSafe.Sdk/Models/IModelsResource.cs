@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The models available to the account.

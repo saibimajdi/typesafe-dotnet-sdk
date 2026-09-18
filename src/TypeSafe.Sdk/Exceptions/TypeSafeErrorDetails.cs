@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The error information carried by an unsuccessful TypeSafe API response.

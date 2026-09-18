@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The request never produced an HTTP response, because the connection could not be established

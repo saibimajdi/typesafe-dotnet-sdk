@@ -1,8 +1,8 @@
-site_name: TypeSafe .NET SDK
+site_name: TypeSafeAI .NET SDK
 site_description: A community .NET client for typed, probability-backed answers from the TypeSafe AI System One API.
-site_url: https://saibimajdi.github.io/typesafe-dotnet-sdk/
-repo_url: https://github.com/saibimajdi/typesafe-dotnet-sdk
-repo_name: saibimajdi/typesafe-dotnet-sdk
+site_url: https://saibimajdi.github.io/typesafeai-dotnet-sdk/
+repo_url: https://github.com/saibimajdi/typesafeai-dotnet-sdk
+repo_name: saibimajdi/typesafeai-dotnet-sdk
 edit_uri: edit/main/docs/
 copyright: Independent, community-maintained SDK. Not affiliated with or endorsed by TypeSafe AI.
 
@@ -51,10 +51,11 @@ nav:
       - Composition patterns: patterns.md
       - Retries & errors: retries-and-errors.md
       - Forward compatibility: forward-compatibility.md
+      - Package migration: package-migration.md
   - Resources:
-      - NuGet package: https://www.nuget.org/packages/TypeSafe.Sdk
-      - Changelog: https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/CHANGELOG.md
-      - Support: https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SUPPORT.md
+      - NuGet package: https://www.nuget.org/packages/TypeSafeAI.Sdk
+      - Changelog: https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/CHANGELOG.md
+      - Support: https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/SUPPORT.md
 
 plugins:
   - search

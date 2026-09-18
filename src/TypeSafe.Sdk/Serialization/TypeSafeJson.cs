@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TypeSafe.Serialization;
+namespace TypeSafeAI.Serialization;
 
 /// <summary>
 /// Serialization helpers for the SDK's model types, and the options the SDK itself uses.

@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A single request attempt exceeded its timeout.

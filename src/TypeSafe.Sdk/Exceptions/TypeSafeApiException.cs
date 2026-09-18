@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The TypeSafe API returned an unsuccessful HTTP response, after any retries.

@@ -4,9 +4,9 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using TypeSafe.Internal;
+using TypeSafeAI.Internal;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The default <see cref="ITypeSafeClient"/> implementation.

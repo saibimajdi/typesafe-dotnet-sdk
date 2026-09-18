@@ -3,14 +3,17 @@
 ## 1. Install
 
 ```bash
-dotnet add package TypeSafe.Sdk
+dotnet add package TypeSafeAI.Sdk
 ```
 
 The dependency injection integration is a separate, optional package:
 
 ```bash
-dotnet add package TypeSafe.Sdk.DependencyInjection
+dotnet add package TypeSafeAI.Sdk.DependencyInjection
 ```
+
+The package IDs and C# namespaces use the `TypeSafeAI` brand. The primary namespaces are
+`TypeSafeAI` and `TypeSafeAI.DependencyInjection`.
 
 ## 2. Get an API key
 
@@ -31,7 +34,7 @@ SDKs, so one set of variables configures every TypeSafe SDK in a deployment.
 ## 3. Ask your first questions
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var client = new TypeSafeClient();               // reads TYPESAFE_API_KEY
 var result = await client.SystemOneAsync(
@@ -61,7 +64,7 @@ the question-bound generic form, which turns a renamed question into a compile e
 runtime miss:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var urgency = new NoulQuestion("is_urgent", "Does this convey urgency?");
 var department = new ChoiceQuestion("department", "Which team should handle this?", ["billing", "technical", "sales"]);
@@ -82,7 +85,7 @@ whose answer was not needed can simply be absent. `TryGet` is the non-throwing f
 right default for anything you are not certain you will need:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 if (result.TryGet(department, out var answer))
 {
@@ -112,7 +115,7 @@ SDK default. Empty or whitespace-only environment values are treated as if they 
 | `TYPESAFE_DEFAULT_MODEL` | `TypeSafeClientOptions.Model` | `jev-latest` |
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var options = new TypeSafeClientOptions
 {
@@ -137,7 +140,7 @@ client leaves it alone and it stays yours to dispose.
 Override any of it for a single call with `TypeSafeRequestOptions`:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var result = await client.SystemOneAsync(
     new SystemOneRequest
@@ -161,7 +164,7 @@ the wire:
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 var state = new JsonObject
 {
@@ -184,7 +187,7 @@ ahead-of-time-compilation-safe path, because it does not need reflection at run 
 
 ```csharp
 using System.Text.Json.Serialization;
-using TypeSafe;
+using TypeSafeAI;
 
 internal sealed record Ticket(string Subject, string Body, string Plan);
 
@@ -217,7 +220,7 @@ the state is serialized with its own property names preserved exactly as declare
 ```csharp
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TypeSafe.DependencyInjection;
+using TypeSafeAI.DependencyInjection;
 
 // In an ASP.NET Core application these are builder.Configuration and builder.Services.
 IConfiguration configuration = new ConfigurationBuilder().Build();
@@ -246,7 +249,7 @@ into your logs.
 ```csharp
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TypeSafe.DependencyInjection;
+using TypeSafeAI.DependencyInjection;
 
 sealed class CorrelationHandler : DelegatingHandler
 {
@@ -277,7 +280,7 @@ impossible to reason about.
 ## 8. List the available models
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var models = await client.Models.ListAsync();
 foreach (var model in models.Models)
@@ -293,7 +296,7 @@ over time.
 ## 9. Handle failures
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 try
 {

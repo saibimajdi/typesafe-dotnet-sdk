@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The request was malformed or missing a required field (HTTP 400).

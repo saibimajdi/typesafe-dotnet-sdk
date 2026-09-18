@@ -1,6 +1,6 @@
 #nullable enable
-const TypeSafe.DependencyInjection.TypeSafeServiceCollectionExtensions.ConfigurationSectionName = "TypeSafe" -> string!
-const TypeSafe.DependencyInjection.TypeSafeServiceCollectionExtensions.HttpClientName = "TypeSafe" -> string!
-static TypeSafe.DependencyInjection.TypeSafeServiceCollectionExtensions.AddTypeSafeClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, Microsoft.Extensions.Configuration.IConfiguration! configuration, System.Action<TypeSafe.TypeSafeClientOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
-static TypeSafe.DependencyInjection.TypeSafeServiceCollectionExtensions.AddTypeSafeClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<TypeSafe.TypeSafeClientOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
-TypeSafe.DependencyInjection.TypeSafeServiceCollectionExtensions
+const TypeSafeAI.DependencyInjection.TypeSafeServiceCollectionExtensions.ConfigurationSectionName = "TypeSafe" -> string!
+const TypeSafeAI.DependencyInjection.TypeSafeServiceCollectionExtensions.HttpClientName = "TypeSafe" -> string!
+static TypeSafeAI.DependencyInjection.TypeSafeServiceCollectionExtensions.AddTypeSafeClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, Microsoft.Extensions.Configuration.IConfiguration! configuration, System.Action<TypeSafeAI.TypeSafeClientOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+static TypeSafeAI.DependencyInjection.TypeSafeServiceCollectionExtensions.AddTypeSafeClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<TypeSafeAI.TypeSafeClientOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder!
+TypeSafeAI.DependencyInjection.TypeSafeServiceCollectionExtensions

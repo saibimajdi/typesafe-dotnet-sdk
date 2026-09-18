@@ -7,7 +7,7 @@ using System.Net;
 // environment variables to exercise the documented TYPESAFE_* configuration behaviour, so parallel
 // collections would interfere with each other; serialising a suite this small costs seconds.
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Builds clients wired to a scripted transport.

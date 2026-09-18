@@ -10,7 +10,7 @@
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
     <EnableAotAnalyzer>false</EnableAotAnalyzer>
     <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
-    <RootNamespace>TypeSafe.Samples</RootNamespace>
+    <RootNamespace>TypeSafeAI.Samples</RootNamespace>
     <AssemblyName>TypeSafe.Sdk.Samples</AssemblyName>
     <UserSecretsId>typesafe-sdk-samples</UserSecretsId>
   </PropertyGroup>

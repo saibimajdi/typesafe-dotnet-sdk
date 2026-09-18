@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>TypeSafe.Sdk.DependencyInjection</PackageId>
+    <PackageId>TypeSafeAI.Sdk.DependencyInjection</PackageId>
+    <!-- Assembly identity intentionally remains stable across the package and namespace migration. -->
     <AssemblyName>TypeSafe.Sdk.DependencyInjection</AssemblyName>
-    <RootNamespace>TypeSafe.DependencyInjection</RootNamespace>
-    <Title>TypeSafe SDK for .NET — dependency injection</Title>
+    <RootNamespace>TypeSafeAI.DependencyInjection</RootNamespace>
+    <Title>TypeSafeAI SDK for .NET — dependency injection</Title>
     <Description>Microsoft.Extensions.DependencyInjection and IHttpClientFactory integration for the TypeSafe AI .NET SDK.</Description>
-    <PackageTags>typesafe;ai;systemone;dependency-injection;httpclientfactory;sdk</PackageTags>
+    <PackageTags>typesafeai;typesafe;ai;systemone;dependency-injection;httpclientfactory;sdk</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

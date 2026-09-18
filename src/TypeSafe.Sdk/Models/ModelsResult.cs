@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// The result of listing the models available to the account.

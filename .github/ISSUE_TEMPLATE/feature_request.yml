@@ -60,8 +60,8 @@ body:
     attributes:
       label: Which package would this affect?
       options:
-        - TypeSafe.Sdk
-        - TypeSafe.Sdk.DependencyInjection
+        - TypeSafeAI.Sdk
+        - TypeSafeAI.Sdk.DependencyInjection
         - Both
         - Not sure
     validations:

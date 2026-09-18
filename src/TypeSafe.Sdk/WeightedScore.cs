@@ -1,4 +1,4 @@
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// One Score answer and the weight it carries in a composite judgment.

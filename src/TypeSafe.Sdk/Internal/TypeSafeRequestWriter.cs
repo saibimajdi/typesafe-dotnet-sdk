@@ -1,9 +1,9 @@
 using System.Buffers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using TypeSafe.Serialization;
+using TypeSafeAI.Serialization;
 
-namespace TypeSafe.Internal;
+namespace TypeSafeAI.Internal;
 
 /// <summary>
 /// Serializes a System One request body.

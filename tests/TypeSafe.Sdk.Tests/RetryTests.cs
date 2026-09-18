@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json.Nodes;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies the retry policy, including the documented defaults and every knob.

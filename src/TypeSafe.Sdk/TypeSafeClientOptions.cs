@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// Configuration for a <see cref="TypeSafeClient"/>.
@@ -85,7 +85,7 @@ public sealed class TypeSafeClientOptions
     /// </summary>
     /// <remarks>
     /// When <see langword="null"/> the client logs nothing. The
-    /// <c>TypeSafe.Sdk.DependencyInjection</c> package wires this up from the container
+    /// <c>TypeSafeAI.Sdk.DependencyInjection</c> package wires this up from the container
     /// automatically.
     /// </remarks>
     public ILoggerFactory? LoggerFactory { get; set; }

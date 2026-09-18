@@ -28,7 +28,7 @@ implicitly, so the common case needs no ceremony:
 
 ```csharp
 using System.Text.Json.Nodes;
-using TypeSafe;
+using TypeSafeAI;
 
 // A plain string.
 var simple = new NoulQuestion("is_urgent", "Does this convey urgency?");
@@ -61,7 +61,7 @@ turn it into one. Use a `ScoreQuestion` with described levels.
 `criteria` optionally pins down a subtle boundary between yes and no:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var question = new NoulQuestion(
     "is_bug_report",
@@ -81,7 +81,7 @@ options with no order between them: routing a ticket to a department, classifyin
 a detected programming language.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 // Bare labels. Each label is sent to the model as-is and echoed back in the answer.
 var byLabel = new ChoiceQuestion(
@@ -129,7 +129,7 @@ spectrum and each point on the spectrum can be described: bug severity, customer
 level. The order of the levels is their numbering, starting at zero.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var rubric = new ScoreQuestion(
     "frustration",
@@ -182,7 +182,7 @@ is what makes speculative fan-out practical. See [patterns.md](patterns.md).
 `IEnumerable<Question>`, so a collection expression or an array works just as well:
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var questions = new QuestionSet
 {

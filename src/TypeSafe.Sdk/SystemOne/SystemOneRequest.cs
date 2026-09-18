@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace TypeSafe;
+namespace TypeSafeAI;
 
 /// <summary>
 /// A complete System One request: one state, and the questions to ask about it.

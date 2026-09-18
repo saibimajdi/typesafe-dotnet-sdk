@@ -18,6 +18,10 @@ coverage*.xml
 coverage*.info
 TestResults/
 
+# Python bytecode, created by running the scripts in eng/ the way CI does
+__pycache__/
+*.pyc
+
 # NuGet
 *.nupkg
 *.snupkg

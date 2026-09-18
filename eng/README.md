@@ -28,20 +28,53 @@ Windows; on Windows without a POSIX shell, run the individual `dotnet` commands 
 [CONTRIBUTING.md](../CONTRIBUTING.md) instead — each step is one command, so a separate PowerShell
 script would only restate them.
 
+It restores in locked mode, exactly as CI does, so a change to `Directory.Packages.props` whose
+`packages.lock.json` files were never regenerated fails here rather than at the tag.
+
+## `coverage-gate.py`
+
+```bash
+python3 eng/coverage-gate.py \
+  --reports 'TestResults/**/*.cobertura.xml' \
+  --line 80 --branch 70 \
+  --assembly TypeSafe.Sdk:78:70 \
+  --assembly TypeSafe.Sdk.DependencyInjection:90:90
+```
+
+Fails (exit 1) when line or branch coverage is below a floor, and prints a markdown table — the
+same table CI puts on the run page and posts as the pull request comment. Thresholds are passed in
+as arguments rather than read from a file, so the numbers CI enforces are visible in
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) and nowhere else.
+
+It is a floor, not a target: it catches a change that stops exercising a whole class of behaviour,
+and it sits a few points below the current numbers deliberately, because a percentage that has to
+be nudged upward every week teaches people to write tests for the number. Two situations are
+errors rather than skips, because both look like a gate that passes while measuring nothing: an
+assembly named in the thresholds but missing from the report — which is what a rename or a project
+that quietly stopped being tested looks like — and finding no reports or no lines at all (exit 2).
+
+It needs nothing but a Python 3 interpreter and the cobertura reports, and it does not recompute
+coverage: the per-assembly rates come from the tool that produced the report, and only the totals
+are summed across reports so that a multi-targeted test project is measured as one run rather than
+as an average of two.
+
 ## What is deliberately not here
 
 - **No build bootstrapper.** There is no `build.sh`, no `build.psm1`, no `.config/dotnet-tools.json`,
   and no Cake or Nuke. `dotnet build TypeSafe.slnx` is the whole build, restore is implicit, and
   Central Package Management already pins every package version. A bootstrapper would be a second
   thing to keep working for no gain.
-- **No coverage or report scripts.** CI runs `dotnet test --solution TypeSafe.slnx --coverage` and
-  uploads the results directory as an artifact. There is no global coverage threshold to enforce,
-  deliberately: a global percentage gate rewards tests that execute lines rather than tests that
-  check behaviour.
+- **No coverage reporting toolchain.** CI collects coverage with
+  `Microsoft.Testing.Extensions.CodeCoverage`, uploads the cobertura reports as artifacts, and the
+  gate above reads them where they lie. There is no ReportGenerator, no HTML report, and no
+  per-class table: the numbers that decide anything are the ones in the gate, and the raw reports
+  are one artifact download away for anyone who wants the detail.
 - **No version bumping script.** Versions come from git tags through MinVer. Bumping a version by
   hand is the thing this repository is arranged to make impossible.
 - **No release automation beyond the workflow.** Publishing is a tag push, and the workflow does the
-  rest, including verifying the produced packages before anything is pushed to nuget.org.
+  rest: it rehearses the push and, on a dry run from a tag, the OIDC handshake; it verifies the
+  produced packages before anything reaches nuget.org; and it confirms afterwards that the published
+  version installs.
 
 ## Possible additions
 

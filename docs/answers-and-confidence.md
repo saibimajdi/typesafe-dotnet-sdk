@@ -61,7 +61,7 @@ of your code can find:
 | Low | confidence < `0.60` | Do not act. Escalate to a human, or improve the question: overlapping rubric levels and vague instructions are the usual causes. |
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 internal enum ConfidenceBand
 {
@@ -119,7 +119,7 @@ Two choice answers can share a winner and mean very different things:
 | `billing` 0.50, `technical` 0.45, `sales` 0.05 | `billing` | low | A genuine coin toss between two options. Treat the winner as a coin toss. |
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var department = result.Choice("department");
 
@@ -147,7 +147,7 @@ levels, which is a stronger sign that the rubric does not fit the state than a l
 itself.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var severity = result.Score("severity");
 
@@ -171,7 +171,7 @@ The API does not guarantee an answer for every question that was asked. A missin
 speculative question whose answer turned out not to be needed.
 
 ```csharp
-using TypeSafe;
+using TypeSafeAI;
 
 var isUrgentQuestion = new NoulQuestion("is_urgent", "Does this convey urgency?");
 
@@ -203,8 +203,8 @@ missing answer is a bug; use `TryGet` when it is expected.
 An answer is only reproducible if you record what produced it.
 
 ```csharp
-using TypeSafe;
-using TypeSafe.Serialization;
+using TypeSafeAI;
+using TypeSafeAI.Serialization;
 
 var result = await client.SystemOneAsync(state, questions);
 
@@ -222,4 +222,4 @@ var replayed = TypeSafeJson.DeserializeResult(json);
 Record `Model` alongside any decision that has to stay reproducible, and re-run your thresholds
 against the cached result rather than calling the API again. `RequestId` is the handle TypeSafe
 support asks for when investigating a specific request; it is safe to log and safe to paste into an
-issue. See [SECURITY.md](https://github.com/saibimajdi/typesafe-dotnet-sdk/blob/main/SECURITY.md) for what is and is not safe to share.
+issue. See [SECURITY.md](https://github.com/saibimajdi/typesafeai-dotnet-sdk/blob/main/SECURITY.md) for what is and is not safe to share.

@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TypeSafe.Tests;
+namespace TypeSafeAI.Tests;
 
 /// <summary>
 /// Verifies that an unsuccessful response becomes the right exception, carrying the right data.

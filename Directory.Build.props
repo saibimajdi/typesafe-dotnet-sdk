@@ -21,6 +21,24 @@
     <!-- Reproducible builds. -->
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!--
+      Reproducible restores. Every project commits a packages.lock.json next to its project file,
+      which pins the entire transitive graph: Central Package Management pins the versions this
+      repository names, but a transitive dependency resolved through a range can still move.
+      CI restores in locked mode (RestoreLockedMode follows CI, exactly like
+      ContinuousIntegrationBuild above), so a change to Directory.Packages.props that was not
+      accompanied by a regenerated lock file fails the build instead of quietly restoring a
+      different graph than the one that was reviewed.
+
+      Regenerate after a deliberate dependency change, with the force-evaluate option of
+      `dotnet restore TypeSafe.slnx` (see CONTRIBUTING.md).
+
+      Locked mode also means a new project must be restored once locally before it can be built
+      in CI: it has no lock file until someone runs restore.
+    -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
   </PropertyGroup>
 
   <!--
