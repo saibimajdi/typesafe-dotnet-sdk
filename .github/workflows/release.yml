@@ -268,6 +268,15 @@ jobs:
             --store-password-in-clear-text \
             --configfile "$config"
 
+          for package_path in typesafeai.sdk typesafeai.sdk.dependencyinjection; do
+            status="$(curl --silent --show-error \
+              --user "$GITHUB_ACTOR:$GH_TOKEN" \
+              --output /dev/null \
+              --write-out '%{http_code}' \
+              "https://nuget.pkg.github.com/$GITHUB_REPOSITORY_OWNER/download/$package_path/index.json")"
+            echo "GitHub Packages probe for $package_path returned HTTP $status."
+          done
+
           dotnet new console --output "$scratch/smoke" --name Smoke --no-restore
           for package in TypeSafeAI.Sdk TypeSafeAI.Sdk.DependencyInjection; do
             dotnet add "$scratch/smoke" package "$package" \
@@ -276,7 +285,8 @@ jobs:
           done
 
           dotnet restore "$scratch/smoke" \
-            --configfile "$config"
+            --configfile "$config" \
+            --verbosity diagnostic
           dotnet build "$scratch/smoke" -c Release --no-restore
 
           echo "::notice::Both packages restore from the rehearsal feed at version $package_version."
